@@ -1,0 +1,33 @@
+.posi{
+    width: 20%;
+}
+.relative{
+    position: relative;
+    left: 273px;
+}
+.relative2{
+    position: relative;
+    left: 20px;
+}
+.botoes{
+    border-radius: 6px;
+}
+.titulo{
+    font-size: large;
+    font-weight: bolder;
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.azul{
+    background-color:aqua;
+}
+.branco{
+    background-color: white;
+}
+.linha{
+    display: flex;
+    flex-flow: row wrap;
+    }
+.coluna2{
+    width: 25%;
+}
