@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador</title>
+        <style>
+        .posi{
+    width: 20%;
+}
+.relative{
+    position: relative;
+    left: 80px;
+}
+.relative2{
+    position: relative;
+    left: 20px;
+}
+
+.titulo{
+    font-size: large;
+    font-weight: bolder;
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+
+.linha{
+    display: flex;
+    flex-flow: row wrap;
+    }
+.coluna2{
+    width: 25%;
+    
+}
+    </style>
+</head>
+
+<body>
+
+    
+    <br>
+    
+        <div class="titulo">Cadastro de lotes de vacinas</div>
+        
+    <form>
+    <label>Lote</label><br>
+    <input type="text" name="lote" size="40" placeholder="" /><br><br>
+
+    <div class="linha">
+       <div class="coluna2">
+           Código da vacina<br>
+          <input type="text" name="codigo" size="27" placeholder="" />
+        </div>
+        <div>
+         <br>
+         <button class="relative" type="">Consultar vacinas</button>
+        </div>
+    </div>
+    <br>
+
+    <label>Validade</label><br>
+    <input type="date" name="validade" size="40" placeholder="" /><br><br>
+
+    <label>Nota fiscal</label><br>
+    <input type="text" name="nota_fiscal" size="40" placeholder="" /><br><br>
+
+    <label>Data de recebimento</label><br>
+    <input type="date" name="recebimento" size="40" placeholder="" /><br><br>
+
+    <label>Quantidade recebida</label><br>
+    <input type="number" name="quantidade" size="40" placeholder="" /><br><br>
+
+    <label>Laboratório</label><br>
+    <input type="text" name="laboratorio" size="40" placeholder="" /><br><br>
+
+    <label>Campanha</label><br>
+    <input type="text" name="campanha" size="40" placeholder="" /></textarea><br><br>
+    <button class="botoes" type="submit">Cadastrar</button> <button class="botoes" type="reset">Limpar campos</button>
+
+
+
+</form>
+</body>
+</html>

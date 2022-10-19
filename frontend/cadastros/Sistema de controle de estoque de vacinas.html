@@ -1,15 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciador</title>
-    <link rel="stylesheet" href="css/estilo1.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Controle de estoque de vacinas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="CSS/main.css" rel="stylesheet">
 </head>
 
 <body>
-
+<!-- Inicio do cabeçalho -->
+<div id="header">
+    <div id="logo">
+      <img src="Images/LogoVGP.png" width="250px">
+    </div>
+    <div id="nameSystem"> Sistema de controle de estoque de vacinas </div>
+    <div id="nameLocal">Secretária da Saúde</div>  
+  </div>
+  <hr>
+  <nav class="navbar navbar-expand-lg justify-content-center">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0"> 
+              <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Cadastros
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">UBS</a></li>
+                <li><a class="dropdown-item" href="#">Usuários</a></li>
+                <li><a class="dropdown-item" href="#">Vacinas</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Movimentação
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Lotes</a></li>
+                <li><a class="dropdown-item" href="#">Requisição de vacinas</a></li>
+                <li><a class="dropdown-item" href="#">Movimentação de vacinas</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Relatórios/Consultas
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Localização das vacinas</a></li>
+                <li><a class="dropdown-item" href="#">Requisições</a></li>
+                <li><a class="dropdown-item" href="#">Movimentação</a></li>
+                <li><a class="dropdown-item" href="#">UBS</a></li>
+                <li><a class="dropdown-item" href="#">Vacinas</a></li>
+                <li><a class="dropdown-item" href="#">Usuários</a></li>
+                <li><a class="dropdown-item" href="#">Saldo de vacinas</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <hr>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script> 
     <div class="azul"><span class="branco"><img src="LogoVGP.png" alt="LogoVGP"></span>
     </div>
     <br>
@@ -47,8 +103,6 @@
     <label>Responsável</label><br>
     <input type="text" name="responsavel" size="40" placeholder="" /></textarea><br><br>
     <button class="botoes" type="submit">Cadastrar</button> <button class="botoes" type="reset">Limpar campos</button>
-
-
 
 </form>
 </body>
