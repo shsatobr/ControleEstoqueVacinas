@@ -7,7 +7,7 @@
     <title>Gerenciador</title>
         <style>
         .posi{
-    width: 20%;
+    width: 0%;
 }
 .relative{
     position: relative;
@@ -38,27 +38,15 @@
 </head>
 
 <body>
-
-    
-    <br>
-    
         <div class="titulo">Cadastro de lotes de vacinas</div>
         
     <form>
     <label>Lote</label><br>
-    <input type="text" name="lote" size="40" placeholder="" /><br><br>
+    <input type="text" name="lote" size="40" /><br><br>
 
-    <div class="linha">
-       <div class="coluna2">
-           Código da vacina<br>
-          <input type="text" name="codigo" size="27" placeholder="" />
-        </div>
-        <div>
-         <br>
-         <button class="relative" type="">Consultar vacinas</button>
-        </div>
-    </div>
-    <br>
+    <label>Vacina</label><br>
+    <input type="text" name="codigo" size="40" placeholder="Código" /><button class="relative2" type="">Consultar vacinas</button><br><br>
+        
 
     <label>Validade</label><br>
     <input type="date" name="validade" size="40" placeholder="" /><br><br>
@@ -73,7 +61,7 @@
     <input type="number" name="quantidade" size="40" placeholder="" /><br><br>
 
     <label>Laboratório</label><br>
-    <input type="text" name="laboratorio" size="40" placeholder="" /><br><br>
+    <input type="text" name="laboratorio" size="40" value="BUSCAR NO BANCO DE DADOS" disabled /><br><br>
 
     <label>Campanha</label><br>
     <input type="text" name="campanha" size="40" placeholder="" /></textarea><br><br>
