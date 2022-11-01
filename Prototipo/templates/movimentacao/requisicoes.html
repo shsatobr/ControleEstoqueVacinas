@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Cadastro de requisições{% endblock %}</h1>
+<p>
+    <a href="{{ url_for('lst_req')}}" class="btn btn-primary">Filtrar</a>
+    <a href="{{ url_for('inc_req')}}" class="btn btn-primary">Incluir</a>
+<br/>
+<div>
+  <table class="table table-bordered"> 
+    <tr>
+      <th>id</th>
+      <th>Vacina</th>
+      <th>UBS Origem</th>
+      <th>UBS Destino</th>
+      <th>Quantidade</th>
+    </tr>
+    {% for lista in lista_reqs %}
+      <tr>
+        <td> <a href="{{ url_for('alt_req',id=lista['req_id']) }}"> {{ lista['req_id'] }}</a></td>
+        <td>{{ lista['req_vacina'] }}</td>
+        <td>{{ lista['req_UBS_orig'] }}</td>
+        <td>{{ lista['req_UBS_dest'] }}</td>
+        <td>{{ lista['req_qtde'] }}</td>
+      </tr>
+    {% endfor %} 
+  </table>
+
+</div>
+</p>
+
+{% endblock %}

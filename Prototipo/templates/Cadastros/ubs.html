@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Listagem de UBS{% endblock %}</h1>
+<p>
+    <a href="{{ url_for('lst_ubs')}}" class="btn btn-primary">Filtrar</a>
+    <a href="{{ url_for('inc_ubs')}}" class="btn btn-primary">Incluir</a>
+<br/>
+<div>
+  <table class="table table-bordered">
+    <tr>
+      <th>Id</th>
+      <th>Nome da UBS</th>
+      <th>Telefone</th>
+      <th>Responsável</th>
+    </tr>
+    {% for lista in lista_ubs %}
+    <tr>
+      <td>
+        <a href="{{ url_for('alt_ubs',id=lista['ubs_id']) }}">   <!--  Vai passar a variável ID como parâmetro -->
+          {{ lista['ubs_id'] }}
+        </a>    
+      </td>
+      <td>
+        {{ lista['ubs_nome'] }}
+      </td>
+      <td>
+        {{ lista['ubs_telefone'] }}
+      </td>
+      <td>
+        {{ lista['ubs_responsavel'] }}
+      </td>
+    </tr>
+    {% endfor %} 
+  </table>
+
+</div>
+</p>
+
+{% endblock %}

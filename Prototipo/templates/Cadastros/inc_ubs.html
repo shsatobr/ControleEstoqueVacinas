@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{% block title %}Cadastro de UBS - Inclusão{% endblock %}</h1>
+  <p>
+    <form method="post">
+      <div class="form-group">
+          <label for="form_nome">Nome (*)</label>
+          <input type="text" name="form_nome"
+               placeholder="Nome da UBS" class="form-control"
+               value="{{ request.form['ubs_nome']}}"></input>
+      </div>
+      <br/>
+      <div class="form-group">
+          <label for="form_endereco">Endereço</label>
+          <input type="text" name="form_endereco" placeholder="Endereço"
+                  class="form-control" value="{{ request.form['ubs_endereco']}}">
+          <label for="form_numero">Número</label>
+          <input type="text" name="form_numero" placeholder="Numero"
+                  class="form-control" value="{{ request.form['ubs_numero']}}">
+              </div>
+      <div class="form-group">
+        <label for="form_bairro">Bairro</label>
+        <input type="text" name="form_bairro" placeholder="Bairro"
+                class="form-control" value="{{ request.form['ubs_bairro']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_telefone">Telefone</label>
+        <input type="text" name="form_telefone" placeholder="Telefone"
+              class="form-control" value="{{ request.form['ubs_telefone']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_responsavel">Responsável</label>
+        <input type="text" name="form_responsavel" placeholder="Responsável"
+            class="form-control" value="{{ request.form['ubs_responsavel']}}">
+      </div>
+      <br/>
+      <div class="form-group">
+          <button type="submit" class="btn btn-primary">Incluir</button>
+      </div>
+    </form>
+</p>
+{% endblock %}

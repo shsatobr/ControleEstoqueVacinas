@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Listagem de Usuários{% endblock %}</h1>
+<p>
+    <a href="{{ url_for('lst_user')}}" class="btn btn-primary">Filtrar</a>
+    <a href="{{ url_for('inc_user')}}" class="btn btn-primary">Incluir</a>
+<br/>
+<div>
+  <table class="table table-bordered">
+    <tr>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>UBS</th>
+    </tr>
+    {% for lista in lista_user %}
+      <tr>
+        <td> <a href="{{ url_for('alt_user',id=lista['usr_id']) }}"> {{ lista['usr_id'] }} </a></td>
+        <td>{{ lista['usr_nome'] }}</td>
+        <td>{{ lista['usr_ubs'] }}</td>
+      </tr>
+    {% endfor %} 
+  </table>
+</div>
+</p>
+
+{% endblock %}

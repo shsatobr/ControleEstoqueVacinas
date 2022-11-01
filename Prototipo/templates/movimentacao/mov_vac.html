@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Cadastro de movimentações{% endblock %}</h1>
+<p>
+    <a href="{{ url_for('lst_mov')}}" class="btn btn-primary">Filtrar</a>
+    <a href="{{ url_for('inc_mov')}}" class="btn btn-primary">Incluir</a>
+<br/>
+<div>
+  <table class="table table-bordered"> 
+    <tr>
+      <th>id</th>
+      <th>Vacina</th>
+      <th>UBS Origem</th>
+      <th>UBS Destino</th>
+      <th>Quantidade</th>
+    </tr>
+    {% for lista in lista_movs %}
+      <tr>
+        <td> <a href="{{ url_for('alt_mov',id=lista['mov_id']) }}"> {{ lista['mov_id'] }}</a></td>
+        <td>{{ lista['mov_vacina'] }}</td>
+        <td>{{ lista['mov_UBS_orig'] }}</td>
+        <td>{{ lista['mov_UBS_dest'] }}</td>
+        <td>{{ lista['mov_qtde'] }}</td>
+      </tr>
+    {% endfor %} 
+  </table>
+
+</div>
+</p>
+
+{% endblock %}

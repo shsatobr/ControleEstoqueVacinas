@@ -8,7 +8,7 @@ import Vacinas from './components/pages/cadastros/Vacinas';
 
 
 import Container from './components/Layout/Container';
-import Footer from './components/Layout/Footer';
+// import Footer from './components/Layout/Footer';
 import Navbar from './components/Layout/Navbar';
 import Header from './components/Layout/Header';
 
@@ -19,17 +19,17 @@ function App() {
       <Navbar/>
       <Container customClass="min-height">        
         <Routes>
-          <select>Cadastro
+          {/* <select>Cadastro
             <option>UBS</option>
             <option>Usuários</option>
             <option>Vacinas</option>
-          </select>
+          </select> */}
           <Route path="/ubs" element={<Ubs/>}/>
           <Route path="/movimentacao" element={<Movimentacao/>}/>
           <Route path="/relatorios" element={<Vacinas/>}/>
         </Routes>
       </Container>
-      <Footer/>
+      {/* <Footer/> */}
     </Router>
 
   );

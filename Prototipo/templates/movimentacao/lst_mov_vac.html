@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Listagem de movimentações{% endblock %}</h1>
+<p>
+  <form method="POST">
+    <div class="form-group">
+      <label for="form_id">ID</label>
+      <input type="number" name="form_id"
+         placeholder="ID" class="form-control"></input>
+    </div>
+    <div class="form-group">
+      <label for="form_vacina">Vacina</label>
+      <input type="text" name="form_vacina"
+         placeholder="Vacina" class="form-control"></input>
+    </div>
+    <div class="form-group">
+      <label for="form_ubs_orig">UBS de origem</label>
+      <input type="number" name="form_ubs_orig"
+         placeholder="UBS de origem" class="form-control"></input>
+    </div>
+    <div class="form-group">
+      <label for="form_ubs_dest">UBS de destino</label>
+      <input type="number" name="form_ubs_dest"
+         placeholder="UBS de destino" class="form-control"></input>
+    </div>
+    </br>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+  </div>
+<br/>
+</p>
+
+{% endblock %}
