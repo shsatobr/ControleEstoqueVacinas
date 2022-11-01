@@ -17,9 +17,9 @@
            value="{{ request.form['form_vacina'] or reg_lts['lts_vacina']}}"></input>
       </div>
       <div class="form-group">
-        <label for="form_val_vacina">Validade da vacina(*))</label>
+        <label for="form_val_vacina">Validade da vacina(*)</label>
         <input type="date" name="form_val_vacina" class="form-control"
-           value="{{ request.form['form_val_vacina'] or reg_lts['lts_val_vacina']}}"></input>
+           value="{{ request.form['form_val_vacina'] or reg_lts['lts_val_vacina'].strftime('%Y-%m-%d')}}"></input>
       </div>
       <div class="form-group">
         <label for="form_nota_fiscal">Nota Fiscal</label>

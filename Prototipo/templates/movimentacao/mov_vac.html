@@ -11,17 +11,21 @@
     <tr>
       <th>id</th>
       <th>Vacina</th>
+      <th>Requisição</th>
       <th>UBS Origem</th>
       <th>UBS Destino</th>
       <th>Quantidade</th>
+      <th>Data do movimento</th>
     </tr>
     {% for lista in lista_movs %}
       <tr>
         <td> <a href="{{ url_for('alt_mov',id=lista['mov_id']) }}"> {{ lista['mov_id'] }}</a></td>
         <td>{{ lista['mov_vacina'] }}</td>
+        <td>{{ lista['mov_requisicao'] }}</td>
         <td>{{ lista['mov_UBS_orig'] }}</td>
         <td>{{ lista['mov_UBS_dest'] }}</td>
-        <td>{{ lista['mov_qtde'] }}</td>
+        <td>{{ "%0.2f"|format(lista['mov_qtde']|float) }}</td>
+        <td>{{ lista['mov_dt_mov'].strftime("%d-%m-%Y") }}</td>
       </tr>
     {% endfor %} 
   </table>

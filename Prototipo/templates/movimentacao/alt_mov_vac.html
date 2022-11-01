@@ -12,7 +12,7 @@
       </div>
       <div class="form-group">
         <label for="form_vacina">Vacina(*)</label>
-        <input type="number" name="form_vacina" class="form-control"
+        <input required type="number" name="form_vacina" class="form-control"
            value="{{ request.form['form_vacina'] or reg_mov['mov_vacina'] }}"></input>
       </div>
       <div class="form-group">
@@ -45,14 +45,14 @@
           </select>
           </div>
         <div class="form-group">
-        <label for="form_motivo">Motivo</label>
-        <input type="Text" name="form_motivo"
+        <label for="form_motivo">Motivo (*)</label>
+        <input required type="Text" name="form_motivo"
            placeholder="Motivo" class="form-control"
            value="{{ request.form['form_motivo'] or reg_mov['mov_motivo'] }}"></input>
       </div>
       <div class="form-group">
-         <label for="form_qtde">Quantidade</label>
-         <input type="number" name="form_qtde"
+         <label for="form_qtde">Quantidade (*)</label>
+         <input required type="number" name="form_qtde"
             placeholder="Quantidade" class="form-control"
             value="{{ request.form['form_qtde'] or '%0.2f'|format(reg_mov['mov_qtde']|float)}}"></input>
       </div>
@@ -60,7 +60,7 @@
         <label for="form_dt_mov">Data da movimentação</label>
         <input readonly type="date" name="form_dt_mov"
              placeholder="Data da movimentação" class="form-control"
-           value="{{ request.form['form_dt_mov'] or reg_mov['mov_dt_mov'] }}"></input>
+           value="{{ request.form['form_dt_mov'] or reg_mov['mov_dt_mov'].strftime('%Y-%m-%d') }}"></input>
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-primary">Alterar</button>

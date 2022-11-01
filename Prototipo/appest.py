@@ -444,17 +444,16 @@ def alt_lts(id):
     reg_lts = get_post_lts(id)
     if request.method == 'POST':
         ws_vacina = request.form['form_vacina']
-        # ws_val_vacina = request.form['form_val_vacina']
+        ws_val_vacina = datetime.strptime(request.form['form_val_vacina'],"%Y-%m-%d")
         ws_nota_fiscal = request.form['form_nota_fiscal']
         ws_dt_recebimento = datetime.strptime(request.form['form_dt_recebimento'],"%Y-%m-%d")
-        # ws_dt_recebimento = request.form['form_dt_recebimento']
         ws_qtde_rec = request.form['form_qtde_rec']
         ws_campanha = request.form['form_campanha']
         if not ws_vacina:
             flash('Vacina é obrigatório','error')
         else:
             reg_lts.lts_vacina = ws_vacina
-            # reg_lts.lts_val_vacina = ws_val_vacina
+            reg_lts.lts_val_vacina = ws_val_vacina
             reg_lts.lts_nota_fiscal = ws_nota_fiscal
             reg_lts.lts_dt_recebimento = ws_dt_recebimento
             reg_lts.lts_qtde_rec = ws_qtde_rec
@@ -467,18 +466,21 @@ def alt_lts(id):
 @app.route('/mnucadastro/lts_inc', methods=('GET', 'POST'))
 def inc_lts():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA TABELA
     if request.method == 'POST':
+        erro = False
         ws_lote = request.form['form_lote']
         ws_vacina = request.form['form_vacina']
-        # ws_val_vacina = request.form['form_val_vacina']
-        ws_val_vacina = datetime.now()
+        ws_val_vacina = datetime.strptime(request.form['form_val_vacina'],"%Y-%m-%d")
         ws_nota_fiscal = request.form['form_nota_fiscal']
         ws_dt_recebimento = datetime.strptime(request.form['form_dt_recebimento'],"%Y-%m-%d")
-        #ws_dt_recebimento = datetime.now()
         ws_qtde_rec = request.form['form_qtde_rec']
         ws_campanha = request.form['form_campanha']
         if not ws_vacina:
-            flash('O código da vacina é obrigatório') # Checar se o vencimento é menor ou igual a data atual
-        else:
+            flash('O código da vacina é obrigatório') 
+            erro = True
+        if (ws_val_vacina < ws_dt_recebimento):
+            flash("Data de vencimento menor que a data de recebimento") # Checar se o vencimento é menor ou igual a data atual
+            erro = True
+        if ( not erro):
             reg_lts = Lotes(lts_lote=ws_lote,
                             lts_vacina=ws_vacina,
                             lts_val_vacina=ws_val_vacina,
@@ -518,8 +520,9 @@ def alt_req(id):
     lista_ubs = Ubs.query.all()
     reg_req = get_post_req(id)
     if request.method == 'POST':
+        erro=False
         ws_id = request.form['form_id']
-        ws_dt_solic = request.form['form_dt_solic']
+        ws_dt_solic = datetime.strptime(request.form['form_dt_solic'],"%Y-%m-%d")
         ws_vacina = request.form['form_vacina']
         ws_ubs_orig = request.form['form_ubs_orig']
         ws_ubs_dest = request.form['form_ubs_dest']
@@ -527,9 +530,13 @@ def alt_req(id):
         ws_responsavel = request.form['form_responsavel']
         if not ws_vacina:
             flash('Vacina é obrigatório','error')
-        else:
+            erro = True
+        if (ws_ubs_dest == ws_ubs_orig):
+            flash("UBS de origem e destino devem ser diferentes")
+            erro = True
+        if (not erro):
             reg_req.req_id = ws_id
-            # reg_req.req_dt_solic = ws_dt_solic
+            reg_req.req_dt_solic = ws_dt_solic
             reg_req.req_vacina = ws_vacina
             reg_req.req_UBS_orig = ws_ubs_orig
             reg_req.req_UBS_dest = ws_ubs_dest
@@ -624,7 +631,7 @@ def alt_mov(id):
 def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA TABELA
     lista_ubs = Ubs.query.all()
     if request.method == 'POST':
-        erro = 0
+        erro = False
         ws_dt_mov = datetime.now()
         ws_vacina = request.form['form_vacina']
         ws_ubs_orig = request.form['form_ubs_orig']
@@ -634,11 +641,11 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
         ws_motivo = request.form['form_motivo']
         if not ws_vacina:
             flash('O código da vacina é obrigatório')
-            erro = 1
+            erro = True
         if (ws_ubs_orig == ws_ubs_dest):
             flash('As UBS de origem e destino devem ser diferentes')
-            erro = 1
-        if (erro == 0):
+            erro = True
+        if ( not erro):
             reg_mov = Movimentacoes(mov_dt_mov = ws_dt_mov,
                             mov_vacina=ws_vacina,
                             mov_UBS_orig=ws_ubs_orig,

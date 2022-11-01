@@ -14,6 +14,7 @@
       <th>UBS Origem</th>
       <th>UBS Destino</th>
       <th>Quantidade</th>
+      <th>Data da requisição</th>
     </tr>
     {% for lista in lista_reqs %}
       <tr>
@@ -21,7 +22,8 @@
         <td>{{ lista['req_vacina'] }}</td>
         <td>{{ lista['req_UBS_orig'] }}</td>
         <td>{{ lista['req_UBS_dest'] }}</td>
-        <td>{{ lista['req_qtde'] }}</td>
+        <td>{{ '%0.2f'|format(lista['req_qtde']|float) }}</td>
+        <td>{{ lista['req_dt_solic'].strftime("%d-%m-%Y") }}</td>
       </tr>
     {% endfor %} 
   </table>
