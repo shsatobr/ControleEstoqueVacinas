@@ -28,13 +28,15 @@ class Ubs(db.Model):   # Nome da tabela e campos conforme banco de dados
     ubs_bairro = db.Column(db.String(35))
     ubs_telefone = db.Column(db.String(11))
     ubs_responsavel = db.Column(db.String(50))
-    # ubs_prod = db.relationship('Forn_prod', backref='fp_fornNome') #Nome da Classe e campo virtual
+    ubs_users = db.relationship('User', backref='user') #Nome da Classe e campo virtual
+    ubs_req_origem = db.relationship('Requisicoes', backref='req_origem') #Nome da Classe e campo virtual
+    ubs_mov = db.relationship('Movimentacoes', backref='mov_ubs') #Nome da Classe e campo virtual
 
 class User(db.Model):
     usr_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     usr_nome = db.Column(db.String(50), nullable=False)
-    usr_ubs = db.Column(db.Integer)
-
+    usr_ubs = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
+    
 class Vacinas(db.Model):
     vcn_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     vcn_nome = db.Column(db.String(50), nullable=False)
@@ -53,43 +55,53 @@ class Vacinas(db.Model):
     vcn_via_administracao = db.Column(db.String(50))
     vcn_local_aplicacao = db.Column(db.String(50))
     vcn_agulha = db.Column(db.String(30))
+    vcn_lotes = db.relationship('Lotes', backref='lote') #Nome da Classe e campo virtual
+    vcn_req = db.relationship('Requisicoes', backref='req') #Nome da Classe e campo virtual
+    vcn_mov = db.relationship('Movimentacoes', backref='mov_vcn') #Nome da Classe e campo virtual
 
 class Lotes(db.Model):   # Nome da tabela e campos conforme banco de dados
     lts_lote = db.Column(db.Integer, primary_key=True)
-    lts_vacina = db.Column(db.Integer, nullable=False)
-    lts_val_vacina = db.Column(db.DateTime, default=datetime.now())
+    lts_vacina = db.Column(db.Integer, db.ForeignKey(Vacinas.vcn_id), nullable=False)
+    lts_val_vacina = db.Column(db.Date, default=datetime.now())
     lts_nota_fiscal = db.Column(db.Integer)
     lts_dt_recebimento = db.Column(db.DateTime, default=datetime.now())
     lts_qtde_rec = db.Column(db.Numeric)
     lts_campanha = db.Column(db.String(50))
-    # ubs_prod = db.relationship('Forn_prod', backref='fp_fornNome') #Nome da Classe e campo virtual
 
 class Requisicoes(db.Model):   # Nome da tabela e campos conforme banco de dados
     req_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    req_vacina = db.Column(db.Integer, nullable=False)
-    req_UBS_orig = db.Column(db.Integer)
+    req_vacina = db.Column(db.Integer,db.ForeignKey(Vacinas.vcn_id), nullable=False)
+    req_UBS_orig = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
     req_UBS_dest = db.Column(db.Integer)
     req_qtde = db.Column(db.Numeric)
     req_responsavel = db.Column(db.String(50))
     req_dt_solic = db.Column(db.DateTime, default=datetime.now())
-    # ubs_prod = db.relationship('Forn_prod', backref='fp_fornNome') #Nome da Classe e campo virtual
-
+  
 class Movimentacoes(db.Model):   # Nome da tabela e campos conforme banco de dados
     mov_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    mov_vacina = db.Column(db.Integer, nullable=False)
+    mov_vacina = db.Column(db.Integer,db.ForeignKey(Vacinas.vcn_id), nullable=False)
     mov_requisicao = db.Column(db.Integer)
-    mov_UBS_orig = db.Column(db.Integer)
+    mov_UBS_orig = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
     mov_UBS_dest = db.Column(db.Integer)
     mov_motivo = db.Column(db.String(50))
     mov_qtde = db.Column(db.Numeric)
     mov_dt_mov = db.Column(db.DateTime, default=datetime.now())
-    # ubs_prod = db.relationship('Forn_prod', backref='fp_fornNome') #Nome da Classe e campo virtual
+
+class Localiza_vacinas(db.Model):   # Nome da tabela e campos conforme banco de dados
+    loc_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    loc_vcn = db.Column(db.Integer,db.ForeignKey(Vacinas.vcn_id), nullable=False)
+    loc_ubs = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
+    loc_lote = db.Column(db.Integer, db.ForeignKey(Lotes.lts_lote))
+    loc_qtde = db.Column(db.Integer)
+    loc_qtde_usada = db.Column(db.String(50))
+    loc_qtde_reserva = db.Column(db.Numeric)
+  
 
 # Rotinas de CRUD
 def get_post_ubs(id):
     reg_ubs = Ubs.query.filter_by(ubs_id=id).first()
     if reg_ubs is None:
-        flash('Fornecedor não cadastrado')
+        flash('UBS não cadastrada')
     return reg_ubs
 
 def get_post_user(id):
@@ -101,7 +113,7 @@ def get_post_user(id):
 def get_post_vcn(id):
     reg_vcn = Vacinas.query.filter_by(vcn_id=id).first()
     if reg_vcn is None:
-        flash('Vacina não cadastrado')
+        flash('Vacina não cadastrada')
     return reg_vcn
 
 def get_post_lts(id):
@@ -113,13 +125,13 @@ def get_post_lts(id):
 def get_post_req(id):
     reg_req = Requisicoes.query.filter_by(req_id=id).first()
     if reg_req is None:
-        flash('Lote não cadastrado')
+        flash('Requisição não cadastrada')
     return reg_req
 
 def get_post_mov(id):
     reg_mov = Movimentacoes.query.filter_by(req_mov=id).first()
     if reg_mov is None:
-        flash('Lote não cadastrado')
+        flash('Movimento não cadastrado')
     return reg_mov
 
 
@@ -199,8 +211,8 @@ def cad_lts():
 
 @app.route('/mnumov/requisicoes', methods=('GET', 'POST'))
 def cad_req():
-    lista_req = Requisicoes.query.all()
-    return render_template('movimentacao/requisicoes.html', lista_reqs=lista_req)
+    lista_reqs = Requisicoes.query.all()
+    return render_template('movimentacao/requisicoes.html', lista_reqs=lista_reqs)
 
 @app.route('/mnumov/movimentacoes', methods=('GET', 'POST'))
 def cad_mov():
@@ -443,15 +455,26 @@ def lst_lts():
 def alt_lts(id):
     reg_lts = get_post_lts(id)
     if request.method == 'POST':
+        erro = False
         ws_vacina = request.form['form_vacina']
         ws_val_vacina = datetime.strptime(request.form['form_val_vacina'],"%Y-%m-%d")
         ws_nota_fiscal = request.form['form_nota_fiscal']
         ws_dt_recebimento = datetime.strptime(request.form['form_dt_recebimento'],"%Y-%m-%d")
         ws_qtde_rec = request.form['form_qtde_rec']
         ws_campanha = request.form['form_campanha']
+        ws_reg_vcn = get_post_vcn(ws_vacina)
         if not ws_vacina:
             flash('Vacina é obrigatório','error')
-        else:
+            erro = True
+        if (not ws_reg_vcn):
+            erro = True
+        if (ws_val_vacina < ws_dt_recebimento):
+            flash('Data de validde menor que a data de recebimento')
+            erro = True
+        if (ws_val_vacina < datetime.today()):
+            flash('Data de validade menor ou igual a data de hoje')
+            erro = True
+        if (not erro):
             reg_lts.lts_vacina = ws_vacina
             reg_lts.lts_val_vacina = ws_val_vacina
             reg_lts.lts_nota_fiscal = ws_nota_fiscal
@@ -464,7 +487,8 @@ def alt_lts(id):
     return render_template('movimentacao/alt_lotes.html', reg_lts=reg_lts)
 
 @app.route('/mnucadastro/lts_inc', methods=('GET', 'POST'))
-def inc_lts():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA TABELA
+def inc_lts():    
+    lista_ubs = Ubs.query.all()           # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA TABELA
     if request.method == 'POST':
         erro = False
         ws_lote = request.form['form_lote']
@@ -474,11 +498,18 @@ def inc_lts():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
         ws_dt_recebimento = datetime.strptime(request.form['form_dt_recebimento'],"%Y-%m-%d")
         ws_qtde_rec = request.form['form_qtde_rec']
         ws_campanha = request.form['form_campanha']
+        ws_ubs = request.form['form_ubs']
+        ws_reg_vcn = get_post_vcn(ws_vacina)
         if not ws_vacina:
             flash('O código da vacina é obrigatório') 
             erro = True
         if (ws_val_vacina < ws_dt_recebimento):
             flash("Data de vencimento menor que a data de recebimento") # Checar se o vencimento é menor ou igual a data atual
+            erro = True
+        if (ws_val_vacina < datetime.today()):
+            flash("Data de validade menor que a data de hoje")
+            erro = True
+        if ( not ws_reg_vcn):
             erro = True
         if ( not erro):
             reg_lts = Lotes(lts_lote=ws_lote,
@@ -487,12 +518,17 @@ def inc_lts():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
                             lts_nota_fiscal=ws_nota_fiscal,
                             lts_dt_recebimento=ws_dt_recebimento,
                             lts_qtde_rec=ws_qtde_rec,
-                            lts_campanha=ws_campanha)
+                            lts_campanha=ws_campanha,
+                            lts_ubs = ws_ubs)
+            reg_loc = Localiza_vacinas(loc_vcn = ws_vacina,
+                                       loc_ubs = ws_ubs,
+                                       loc_lote = ws_lote,
+                                       loc_qtde = ws_qtde_rec)
             db.session.add(reg_lts)
             db.session.commit()
             flash('Inclusao feita com sucesso')
             return redirect(url_for('cad_lts'))
-    return render_template('movimentacao/inc_lotes.html')
+    return render_template('movimentacao/inc_lotes.html', lista_ubs=lista_ubs)
 
 @app.route('/mnucadastro/<int:id>/lts_del', methods=('GET', 'POST'))
 def del_lts(id):
@@ -524,6 +560,7 @@ def alt_req(id):
         ws_id = request.form['form_id']
         ws_dt_solic = datetime.strptime(request.form['form_dt_solic'],"%Y-%m-%d")
         ws_vacina = request.form['form_vacina']
+        ws_reg_vcn = get_post_vcn(ws_vacina)
         ws_ubs_orig = request.form['form_ubs_orig']
         ws_ubs_dest = request.form['form_ubs_dest']
         ws_qtde = request.form['form_qtde']
@@ -533,6 +570,8 @@ def alt_req(id):
             erro = True
         if (ws_ubs_dest == ws_ubs_orig):
             flash("UBS de origem e destino devem ser diferentes")
+            erro = True
+        if (not ws_reg_vcn):
             erro = True
         if (not erro):
             reg_req.req_id = ws_id
@@ -550,21 +589,24 @@ def alt_req(id):
 @app.route('/mnumov/req_inc', methods=('GET', 'POST'))
 def inc_req():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA TABELA
     lista_ubs = Ubs.query.all()
-    erro = 0
+    erro = False
     if request.method == 'POST':
         ws_dt_solic = datetime.now()
         ws_vacina = request.form['form_vacina']
+        ws_reg_vcn = get_post_vcn(ws_vacina)
         ws_ubs_orig = request.form['form_ubs_orig']
         ws_ubs_dest = request.form['form_ubs_dest']
         ws_qtde = request.form['form_qtde']
         ws_responsavel = request.form['form_responsavel']
         if not ws_vacina:
             flash('O código da vacina é obrigatório')
-            erro = 1
+            erro = True
         if (ws_ubs_orig == ws_ubs_dest):
             flash('As UBS de origem e destino devem ser diferentes')
-            erro = 1
-        if (erro == 0):
+            erro = True
+        if (not ws_reg_vcn):
+            erro = True
+        if (not erro ):
             reg_req = Requisicoes(req_dt_solic = ws_dt_solic,
                             req_vacina=ws_vacina,
                             req_UBS_orig=ws_ubs_orig,
@@ -603,8 +645,10 @@ def alt_mov(id):
     lista_ubs = Ubs.query.all()
     reg_mov = get_post_mov(id)
     if request.method == 'POST':
+        erro = False
         ws_id = request.form['form_id']
         ws_vacina = request.form['form_vacina']
+        ws_reg_vcn = get_post_vcn(ws_vacina)
         ws_requisicao = request.form['form_requisicao']
         ws_ubs_orig = request.form['form_ubs_orig']
         ws_ubs_dest = request.form['form_ubs_dest']
@@ -613,7 +657,10 @@ def alt_mov(id):
         # ws_dt_mov = request.form['form_dt_mov']
         if not ws_vacina:
             flash('Vacina é obrigatório','error')
-        else:
+            erro = True
+        if (not ws_reg_vcn):
+            erro = True
+        if (not erro):
             reg_mov.mov_id = ws_id
             # reg_mov.req_dt_solic = ws_dt_solic
             reg_mov.mov_vacina = ws_vacina
@@ -634,6 +681,7 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
         erro = False
         ws_dt_mov = datetime.now()
         ws_vacina = request.form['form_vacina']
+        ws_reg_vcn = get_post_vcn(ws_vacina)
         ws_ubs_orig = request.form['form_ubs_orig']
         ws_ubs_dest = request.form['form_ubs_dest']
         ws_qtde = request.form['form_qtde']
@@ -644,6 +692,8 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
             erro = True
         if (ws_ubs_orig == ws_ubs_dest):
             flash('As UBS de origem e destino devem ser diferentes')
+            erro = True
+        if (not ws_reg_vcn):
             erro = True
         if ( not erro):
             reg_mov = Movimentacoes(mov_dt_mov = ws_dt_mov,

@@ -9,12 +9,23 @@
          <input required type="number" name="form_vacina" class="form-control"
             value="{{ request.form['form_vacina']}}"></input>
       </div>
+
+      <!-- Incluir lote -->
+
       <div class="form-group">
-         <label for="form_requisicao">Requisição</label>
+         Motivo
+         <select name="form_motivo">
+            <option value="1">Transferência</option>
+            <option value="2">Uso e consumo</option>
+            <option value="3">Perda</option>
+         </select>
+      </div>
+      <div class="form-group">
+         <label for="form_requisicao">Requisição</label>          <!-- Somente no caso de transferência -->
          <input type="number" name="form_requisicao" class="form-control"
             value="{{ request.form['form_requisicao']}}"></input>
       </div>
-      <div class="form-group">
+      <div class="form-group">                                    <!-- Somente no caso de transferência -->
          UBS de origem
          <select name="form_ubs_orig">
             {% for lista in lista_ubs %}
@@ -22,19 +33,13 @@
             {% endfor %}
          </select>
          </div>
-         <div class="form-group">
+         <div class="form-group">                                 <!-- Nos casos de uso e consumo e perda, significa UBS que usou a vacina -->
             UBS de destino
             <select name="form_ubs_dest">
                {% for lista in lista_ubs %}
                   <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
                {% endfor %}
             </select>
-         </div>
-         <div class="form-group">
-            <label for="form_motivo">Motivo (*)</label>
-            <input required type="motivo" name="form_motivo"
-               placeholder="Motivo" class="form-control"
-               value="{{ request.form['form_motivo']}}"></input>
          </div>
          <div class="form-group">
             <label for="form_qtde">Quantidade (*)</label>
@@ -54,4 +59,9 @@
      </form>
 </p>
 
+{% endblock %}
+{% block scripts %} 
+<script>
+   
+</script>
 {% endblock %}

@@ -34,3 +34,8 @@
  hr {
     margin: 0;
  }
+
+ .form_select {
+    margin-top: 10px;
+    margin-bottom: 10px;
+ }

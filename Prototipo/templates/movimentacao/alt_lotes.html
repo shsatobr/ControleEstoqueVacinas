@@ -17,6 +17,11 @@
            value="{{ request.form['form_vacina'] or reg_lts['lts_vacina']}}"></input>
       </div>
       <div class="form-group">
+        <label for="form_vacina_nome">Nome do vacinas</label>
+        <input readonly type="text" name="form_vacina_nome" class="form-control"
+           value="{{ reg_lts.lote.vcn_nome }}"></input>
+      </div>
+      <div class="form-group">
         <label for="form_val_vacina">Validade da vacina(*)</label>
         <input type="date" name="form_val_vacina" class="form-control"
            value="{{ request.form['form_val_vacina'] or reg_lts['lts_val_vacina'].strftime('%Y-%m-%d')}}"></input>

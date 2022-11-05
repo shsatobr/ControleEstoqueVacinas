@@ -11,6 +11,7 @@
     <tr>
       <th>Lote</th>
       <th>Vacina</th>
+      <th>Nome da vacina</th>
       <th>Validade</th>
       <th>Quantidade</th>
       <th>Laboratorio</th>
@@ -20,9 +21,10 @@
       <tr>
         <td> <a href="{{ url_for('alt_lts',id=lista['lts_lote']) }}"> {{ lista['lts_lote'] }}</a></td>
         <td>{{ lista['lts_vacina'] }}</td>
+        <td>{{ lista.lote.vcn_nome }}</td>
         <td>{{ lista['lts_val_vacina'].strftime('%d-%m-%Y') }}</td>
         <td>{{ '%0.2f'|format(lista['lts_qtde_rec']|float) }}</td>
-        <td>{{ lista['lts_laboratorio'] }}</td>
+        <td>{{ lista.lote.vcn_laboratorio }}</td>
         <td>{{ lista['lts_dt_recebimento'].strftime('%d-%m-%Y') }}</td>
       </tr>
     {% endfor %} 

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Localização de vacinas{% endblock %}</h1>
+<p>
+    <a href="{{ url_for('lst_loc')}}" class="btn btn-primary">Filtrar</a>
+<br/>
+<div>
+  <table class="table table-bordered"> 
+    <tr>
+      <th>id</th>
+      <th>Vacina</th>
+      <th>Nome da vacina</th>
+      <th>Requisição</th>
+      <th>UBS</th>
+      <th>Nome da UBS</th>
+      <th>Quantidade</th>
+      <th>Qtde usada</th>
+      <th>Qtde reservada</th>
+    </tr>
+    {% for lista in lista_movs %}
+      <tr>
+        <td> <a href="{{ url_for('alt_loc',id=lista['loc_id']) }}"> {{ lista['loc_id'] }}</a></td>
+        <td>{{ lista['loc_vacina'] }}</td>
+        <td>{{ lista.loc_vcn.vcn_nome }}</td>
+        <td>{{ lista['loc_requisicao'] }}</td>
+        <td>{{ lista['loc_ubs'] }}</td>
+        <td>{{ lista.loc_ubs.ubs_nome }}</td>
+        <td>{{ "%0.2f"|format(lista['mov_qtde']|float) }}</td>
+        <td>{{ "%0.2f"|format(lista['mov_qtde_usada']|float) }}</td>
+        <td>{{ "%0.2f"|format(lista['mov_qtde_reservada']|float) }}</td>
+      </tr>
+    {% endfor %} 
+  </table>
+
+</div>
+</p>
+
+{% endblock %}
