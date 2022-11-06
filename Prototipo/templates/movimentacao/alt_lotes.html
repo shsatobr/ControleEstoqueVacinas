@@ -27,6 +27,18 @@
            value="{{ request.form['form_val_vacina'] or reg_lts['lts_val_vacina'].strftime('%Y-%m-%d')}}"></input>
       </div>
       <div class="form-group">
+        UBS
+        <select name="form_ubs">
+           {% for lista in lista_ubs %}
+              {% if (lista['ubs_id'] == reg_lts['lts_ubs']) %}
+                <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
+              {% else %}
+                <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
+              {% endif %}
+           {% endfor %}
+        </select> 
+      </div>
+      <div class="form-group">
         <label for="form_nota_fiscal">Nota Fiscal</label>
         <input type="number" name="form_nota_fiscal"
            placeholder="Número da nota fiscal" class="form-control"

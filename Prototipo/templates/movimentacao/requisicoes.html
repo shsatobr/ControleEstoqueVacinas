@@ -16,7 +16,8 @@
       <th>Nome UBS Origem</th>
       <th>UBS Destino</th>
       <th>Nome UBS Destino</th>
-      <th>Quantidade</th>
+      <th>Quantidade solicitada</th>
+      <th>Quantidade atendida</th>
       <th>Data da requisição</th>
     </tr>
     {% for lista in lista_reqs %}
@@ -29,6 +30,7 @@
         <td>{{ lista['req_UBS_dest'] }}</td>
         <td>{{ ws_ubs_dest }}</td>
         <td>{{ '%0.2f'|format(lista['req_qtde']|float) }}</td>
+        <td>{{ '%0.2f'|format(lista['req_atendida']|float) }}</td>
         <td>{{ lista['req_dt_solic'].strftime("%d-%m-%Y") }}</td>
       </tr>
     {% endfor %} 

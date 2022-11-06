@@ -11,24 +11,28 @@
       <th>id</th>
       <th>Vacina</th>
       <th>Nome da vacina</th>
+      <th>Lote</th>
       <th>Requisição</th>
       <th>UBS</th>
       <th>Nome da UBS</th>
       <th>Quantidade</th>
       <th>Qtde usada</th>
       <th>Qtde reservada</th>
+      <th>Saldo disponível</th>
     </tr>
-    {% for lista in lista_movs %}
+    {% for lista in lista_locs %}
       <tr>
-        <td> <a href="{{ url_for('alt_loc',id=lista['loc_id']) }}"> {{ lista['loc_id'] }}</a></td>
-        <td>{{ lista['loc_vacina'] }}</td>
-        <td>{{ lista.loc_vcn.vcn_nome }}</td>
+        <td>{{ lista['loc_id'] }}</a></td>
+        <td>{{ lista['loc_vcn'] }}</td>
+        <td>{{ lista.local_vcn.vcn_nome }}</td>
+        <td>{{ lista['loc_lote'] }}</td>
         <td>{{ lista['loc_requisicao'] }}</td>
         <td>{{ lista['loc_ubs'] }}</td>
-        <td>{{ lista.loc_ubs.ubs_nome }}</td>
-        <td>{{ "%0.2f"|format(lista['mov_qtde']|float) }}</td>
-        <td>{{ "%0.2f"|format(lista['mov_qtde_usada']|float) }}</td>
-        <td>{{ "%0.2f"|format(lista['mov_qtde_reservada']|float) }}</td>
+        <td>{{ lista.local_ubs.ubs_nome }}</td>
+        <td>{{ "%0.2f"|format(lista['loc_qtde']|float) }}</td>
+        <td>{{ "%0.2f"|format(lista['loc_qtde_usada']|float) }}</td>
+        <td>{{ "%0.2f"|format(lista['loc_qtde_reserva']|float) }}</td>
+        <td>{{ "%0.2f"|format((lista['loc_qtde'] - lista['loc_qtde_usada'] - lista['loc_qtde_reserva'])|float) }}</td>
       </tr>
     {% endfor %} 
   </table>

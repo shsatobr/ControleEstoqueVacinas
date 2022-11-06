@@ -12,8 +12,8 @@
          </div>
          <div class="form-group">
            <label for="form_vacina">Código do vacina (*)</label>
-           <input required type="number" name="form_vacina"
-                placeholder="Código da vacina" class="form-control"
+           <input onchange="pesq_Lab()" required type="number" name="form_vacina"
+                placeholder="Código da vacina" class="form-control" id="form_vacina"
               value="{{ request.form['form_vacina']}}"></input>
          </div>
          <div class="form-group">
@@ -64,5 +64,12 @@
         </div>
      </form>
 </p>
-
+{% endblock %}
+{% block scripts %} 
+<script>
+   function pesq_Lab() {
+      ws_vacina = document.getElementById('form_vacina')
+      console.log(ws_vacina.value)
+   }
+</script>
 {% endblock %}

@@ -12,6 +12,8 @@
       <th>id</th>
       <th>Vacina</th>
       <th>Nome da vacina</th>
+      <th>Lote</th>
+      <th>Motivo</th>
       <th>Requisição</th>
       <th>UBS Origem</th>
       <th>Nome da UBS</th>
@@ -24,6 +26,16 @@
         <td> <a href="{{ url_for('alt_mov',id=lista['mov_id']) }}"> {{ lista['mov_id'] }}</a></td>
         <td>{{ lista['mov_vacina'] }}</td>
         <td>{{ lista.mov_vcn.vcn_nome }}</td>
+        <td>{{ lista['mov_lote'] }}</td>
+        {% if (lista['mov_motivo'] == "1") %}
+          <td>Transferência</td>
+        {% endif %}
+        {% if (lista['mov_motivo'] == "2") %}
+          <td>Uso e consumo</td>
+        {% endif %}
+        {% if (lista['mov_motivo'] == "3") %}
+          <td>Perda</td>
+        {% endif %}
         <td>{{ lista['mov_requisicao'] }}</td>
         <td>{{ lista['mov_UBS_orig'] }}</td>
         <td>{{ lista.mov_ubs.ubs_nome }}</td>

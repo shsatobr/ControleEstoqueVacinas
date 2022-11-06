@@ -10,11 +10,16 @@
                 class="form-control" id="date-input"></input>
         </div>
         <div class="form-group">
+         <label for="form_lote">Lote(*)</label>
+         <input required type="number" name="form_lote" class="form-control"
+            value="{{ request.form['form_lote']}}"></input>
+      </div>
+      <div class="form-group">
            <label for="form_vacina">Vacina(*)</label>
-           <input required type="number" name="form_vacina" class="form-control"
+           <input readonly type="number" name="form_vacina" class="form-control"
               value="{{ request.form['form_vacina']}}"></input>
         </div>
-        <div class="form-group">
+        <div class="form-group form_select">
          UBS de origem
          <select name="form_ubs_orig">
             {% for lista in lista_ubs %}
@@ -22,7 +27,7 @@
             {% endfor %}
          </select>
          </div>
-         <div class="form-group">
+         <div class="form-group form_select">
             UBS de destino
             <select name="form_ubs_dest">
                {% for lista in lista_ubs %}
