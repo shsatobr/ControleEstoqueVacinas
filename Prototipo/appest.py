@@ -709,15 +709,18 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
         ws_ubs_orig = request.form['form_ubs_orig']
         if (ws_motivo == "1"):
             ws_ubs_dest = request.form['form_ubs_dest']
+            ws_requisicao = request.form['form_requisicao']
             ws_reg_locd = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_dest, loc_lote = ws_lote).first()
+            ws_reg_req = get_post_req(ws_requisicao)
             if (ws_ubs_orig == ws_ubs_dest):
                 flash('As UBS de origem e destino devem ser diferentes')
+                erro = True
+            if (not ws_reg_req):
                 erro = True
         else:
             ws_ubs_dest = 999
             ws_reg_locd = ""
         ws_qtde = float(request.form['form_qtde'])
-        ws_requisicao = request.form['form_requisicao']
         ws_reg_lts = get_post_lts(ws_lote)
         ws_reg_loco = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_orig, loc_lote = ws_lote).first()
         # if (not ws_reg_vcn):
@@ -750,6 +753,7 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
                             mov_motivo=ws_motivo,
                             mov_lote = ws_lote)
             if (ws_motivo == "1"):
+                ws_reg_loco.loc_qtde_reserva = float(ws_reg_loco.loc_qtde_reserva) - ws_qtde
                 if (not ws_reg_locd):
                     ws_loc_vcn = ws_vacina
                     ws_loc_ubs = ws_ubs_dest
@@ -764,7 +768,7 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
                     db.session.add(reg_loc_dest)
                     db.session.commit()
                 else:
-                    ws_reg_locd.loc_qtde = ws_reg_locd + ws_qtde
+                    ws_reg_locd.loc_qtde = float(ws_reg_locd.loc_qtde) + ws_qtde
             db.session.add(reg_mov)
             db.session.commit()
             flash('Inclusao feita com sucesso')

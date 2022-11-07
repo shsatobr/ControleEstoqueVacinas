@@ -24,7 +24,7 @@
       </div>
       <div class="form-group">
          <label for="form_requisicao">Requisição</label>          <!-- Somente no caso de transferência -->
-         <input id="form_requisicao" type="number" name="form_requisicao" class="form-control"
+         <input required id="form_requisicao" type="number" name="form_requisicao" class="form-control"
             value="{{ request.form['form_requisicao']}}"></input>
       </div>
       <div class="form-group form_select">                                    <!-- Somente no caso de transferência -->
