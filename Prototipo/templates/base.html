@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="/static/css/main.css" rel="stylesheet"/>
+
+    <title>{% block title %} {% endblock %}</title>
+  </head>
+  <body>
+    <header id="header">
+      <div id="logo">
+        <img src="/static/images/LogoVGP.png" width="250px">
+      </div>
+      <div id="nameSystem"> Sistema de controle de estoque de vacinas </div>
+      <div id="nameLocal">Secretária da Saúde</div>  
+    </header>
+
+    <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav justify-content-center">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle prim_item" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Cadastros
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('cad_ubs')}}">UBS</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('cad_user') }}">Usuários</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ url_for('cad_vcn')}}">Vacinas</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Movimentação
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('cad_lts')}}">Lotes</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('cad_req') }}">Requisição de vacinas</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('cad_mov') }}">Movimentação de vacinas</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Relatórios
+              </a>
+              <ul class="dropdown-menu">
+                <!-- <li><a class="dropdown-item" href="{{ url_for('cad_ubs')}}">UBS</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('cad_user')}}">Usuários</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('cad_vcn')}}">Vacinas</a></li>
+                <li><hr class="dropdown-divider"></li> -->
+                <li><a class="dropdown-item" href="{{ url_for('rel_loc') }}">Localização das vacinas</a></li>
+                <!-- <li><a class="dropdown-item" href="{{ url_for('cad_req')}}">Requisições</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('cad_mov')}}">Movimentação</a></li> -->
+                <li><a class="dropdown-item" href="#">Saldo das vacinas</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('index') }}">Sair</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <hr>
+    <div class="container">
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+        {% block content %} {% endblock %}
+    </div>
+
+    <!-- Optional JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>
+      const myDate = new Date().toLocaleDateString('sv-se');
+      const myInput = document.querySelector("#date-input");
+      myInput.value=myDate;
+    </script>
+    {% block scripts %} 
+    {% endblock %}
+  </body>
+</html>

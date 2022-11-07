@@ -1,3 +1,5 @@
 backend/venv/Include
 backend/venv/Lib
 backend/venv/Scripts
+Prototipo/__pycache__
+Prototipo/venv

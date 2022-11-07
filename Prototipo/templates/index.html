@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form id="login" action="main.html">
+    <h1>Login</h1>
+    <div>
+      <label for="floatingInput">Email</label></br>
+      <input type="email" id="floatingInput" placeholder="abc@abc.com.br" size="40">
+    </div>
+    <br>
+    <div>
+      <label for="floatingPassword">Senha</label></br>
+      <input type="password" id="floatingPassword" placeholder="Senha" size="40">
+    </div>
+    <br>
+    <div>
+      <label>
+        <input type="checkbox" value="remember-me"> Lembre-me
+      </label>
+    </div>
+    <br>
+    <button type="submit">Acessar</button>
+  </form>
+</main>
+<!-- 
+    <p> 
+        <a href="{{ url_for('mnucadastro')}}">Cadastro</a><br/>    <!-- Usar o nome dado para a função - def <nome>> 
+        <a href="{{ url_for('cad_movimentacao')}}">Movimentação</a><br/>
+    </p>
+    <hr> -->
+{% endblock %}

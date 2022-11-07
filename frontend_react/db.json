@@ -1,0 +1,12 @@
+{
+    "ubs":[
+        {
+            "id": 1,
+            "nome": "Vigilancia Epidemiologica"
+        },
+        {
+            "id":2,
+            "nome":"Bela Vista"
+        }
+    ]
+}

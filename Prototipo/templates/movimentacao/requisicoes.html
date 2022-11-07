@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Cadastro de requisições{% endblock %}</h1>
+<p>
+    <a href="{{ url_for('lst_req')}}" class="btn btn-primary">Filtrar</a>
+    <a href="{{ url_for('inc_req')}}" class="btn btn-primary">Incluir</a>
+<br/>
+<div>
+  <table class="table table-bordered"> 
+    <tr>
+      <th>id</th>
+      <th>Vacina</th>
+      <th>Nome da vacina</th>
+      <th>UBS Origem</th>
+      <th>Nome UBS Origem</th>
+      <th>UBS Destino</th>
+      <th>Nome UBS Destino</th>
+      <th>Quantidade solicitada</th>
+      <th>Quantidade atendida</th>
+      <th>Data da requisição</th>
+    </tr>
+    {% for lista in lista_reqs %}
+      <tr>
+        <td> <a href="{{ url_for('alt_req',id=lista['req_id']) }}"> {{ lista['req_id'] }}</a></td>
+        <td>{{ lista['req_vacina'] }}</td>
+        <td>{{ lista.req.vcn_nome }}</td>
+        <td>{{ lista['req_UBS_orig'] }}</td>
+        <td>{{ lista.req_origem.ubs_nome }}</td>
+        <td>{{ lista['req_UBS_dest'] }}</td>
+        <td>{{ ws_ubs_dest }}</td>
+        <td>{{ '%0.2f'|format(lista['req_qtde']|float) }}</td>
+        <td>{{ '%0.2f'|format(lista['req_atendida']|float) }}</td>
+        <td>{{ lista['req_dt_solic'].strftime("%d-%m-%Y") }}</td>
+      </tr>
+    {% endfor %} 
+  </table>
+
+</div>
+</p>
+
+{% endblock %}

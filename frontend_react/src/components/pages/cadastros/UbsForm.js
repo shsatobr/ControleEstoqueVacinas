@@ -12,6 +12,7 @@ function UbsForm({btnText}) {
             <Input type="text" text="Bairro" name="frm_bairro" placeholder="Bairro"/>
             <Input type="text" text="Telefone" name="frm_telefone" placeholder="Telefone"/>
             <Input type="text" text="Responsável" name="frm_telefone" placeholder="Nome do responsável"/>
+
             {/* <Select name="ubs_id" text="Selecione o ID"/>
             <SubmitButton text="Direto"/> */}
             <SubmitButton text={btnText}/>

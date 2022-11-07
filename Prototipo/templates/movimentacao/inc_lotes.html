@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Inclusão de lotes{% endblock %}</h1>
+<p>
+    <form method="post">
+         <div class="form-group">
+           <label for="form_lote">Código do lote(*)</label>
+           <input required type="number" name="form_lote"
+                placeholder="Código do lote" class="form-control"
+                value="{{ request.form['form_lote']}}"></input>
+         </div>
+         <div class="form-group">
+           <label for="form_vacina">Código do vacina (*)</label>
+           <input onchange="pesq_Lab()" required type="number" name="form_vacina"
+                placeholder="Código da vacina" class="form-control" id="form_vacina"
+              value="{{ request.form['form_vacina']}}"></input>
+         </div>
+         <div class="form-group">
+           <label for="form_val_vacina">Validade da vacina(*)</label>
+           <input required type="date" name="form_val_vacina" class="form-control"
+              value="{{ request.form['form_val_vacina']}}"></input>
+         </div>
+         <div class="form-group form_select">
+            UBS
+            <select name="form_ubs">
+               {% for lista in lista_ubs %}
+                  <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
+               {% endfor %}
+            </select>
+            </div>
+         <div class="form-group">
+           <label for="form_nota_fiscal">Nota Fiscal</label>
+           <input type="number" name="form_nota_fiscal"
+              placeholder="Número da nota fiscal" class="form-control"
+              value="{{ request.form['form_nota_fiscal']}}"></input>
+        </div>
+        <div class="form-group">
+            <label for="form_dt_recebimento">Data do recebimento</label>
+            <input type="date" name="form_dt_recebimento" id="date-input"
+               class="form-control" ></input>
+         </div>
+         <div class="form-group">
+            <label for="form_qtde_rec">Quantidade recebida</label>
+            <input required type="number" name="form_qtde_rec"
+               placeholder="Quantidade recebida" class="form-control"
+               value="{{ request.form['form_qtde_rec']}}"></input>
+         </div>
+         <div class="form-group">
+            <label for="form_campanha">Campanha</label>
+            <input type="Text" name="form_campanha"
+               placeholder="Campanha" class="form-control"
+               value="{{ request.form['form_campanha']}}"></input>
+         </div>
+        <br/>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Incluir</button>
+        </div>
+     </form>
+</p>
+{% endblock %}
+{% block scripts %} 
+<script>
+   function pesq_Lab() {
+      ws_vacina = document.getElementById('form_vacina')
+      console.log(ws_vacina.value)
+   }
+</script>
+{% endblock %}

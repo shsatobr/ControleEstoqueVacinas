@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{% block title %}Cadastro de vacinas - "{{ reg_vacinas['vcn_nome'] }}" {% endblock %}</h2>
+  <p>
+    <form method="post">
+      <div class="form-group">
+        <label for="form_vcn_id">ID</label>
+        <input readonly type="text" name="form_vcn_id" class="form-control"
+             value="{{ request.form['form_vcn_id'] or reg_vacinas['vcn_id']}}"></input>
+      </div>
+      <br/>
+      <div class="form-group">
+        <label for="form_nome">Nome (*)</label>
+        <input type="text" name="form_nome"
+             placeholder="Nome da vacina" class="form-control"
+             value="{{ request.form['form_nome'] or reg_vacinas['vcn_nome']}}"></input>
+      </div>
+      <div class="form-group">
+        <label for="form_protecao">Proteção contra</label>
+        <input type="text" name="form_protecao" placeholder="Proteção contra ..."
+                class="form-control" value="{{ request.form['form_protecao'] or reg_vacinas['vcn_protecao']}}">
+      </div>
+      <div>
+        <label for="form_est_min">Estoque mínimo</label>
+        <input type="text" name="form_est_min" placeholder="Estoque mínimo"
+              class="form-control" value="{{ request.form['form_est_min'] or '%0.2f' | format(reg_vacinas['vcn_est_min']|float)}}">
+      </div>
+      <div class="form-group">
+        <label for="form_est_max">Estoque mácimo</label>
+        <input type="text" name="form_est_max" placeholder="Estoque mácimo"
+              class="form-control" value="{{ request.form['form_est_max'] or '%0.2f' | format(reg_vacinas['vcn_est_max']|float)}}">
+      </div>
+      <div class="form-group">
+        <label for="form_vol_dose">Volume por dose</label>
+        <input type="text" name="form_vol_dose" placeholder="Volume por dose"
+            class="form-control" value="{{ request.form['form_vol_dose'] or '%0.2f'| format(reg_vacinas['vcn_vol_dose']|float)}}">
+      </div>
+      <div class="form-group">
+        <label for="form_temperatura">Temperatura</label>
+        <input type="text" name="form_temperatura" placeholder="Temperatura"
+            class="form-control" value="{{ request.form['form_temperatura'] or '%0.2f'|format(reg_vacinas['vcn_temperatura']|float)}}">
+      </div>
+      <div class="form-group">
+        <label for="form_laboratorio">Laboratório</label>
+        <input type="text" name="form_laboratorio" placeholder="Nome do laboratório"
+            class="form-control" value="{{ request.form['form_laboratorio'] or reg_vacinas['vcn_laboratorio']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_reacoes">Reações</label>
+        <input type="text" name="form_reacoes" placeholder="Reações"
+            class="form-control" value="{{ request.form['form_reacoes'] or reg_vacinas['vcn_reacoes']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_composicao">Composição</label>
+        <input type="text" name="form_composicao" placeholder="Composição"
+            class="form-control" value="{{ request.form['form_composicao'] or reg_vacinas['vcn_composicao']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_doses">Número de doses</label>
+        <input type="text" name="form_doses" placeholder="Número de doses"
+            class="form-control" value="{{ request.form['form_doses'] or '%0.2f' | format(reg_vacinas['vcn_doses'] | float)}}">
+      </div>
+      <div class="form-group">
+        <label for="form_idade_rec">Idade recomendada</label>
+        <input type="text" name="form_idade_rec" placeholder="Idade recomendada"
+            class="form-control" value="{{ request.form['form_idade_rec'] or reg_vacinas['vcn_idade_rec']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_intervalo_doses_rec">Intervalo entre doses (recomendado - meses)</label>
+        <input type="text" name="form_intervalo_doses_rec" placeholder="Intervalor entre doses (recomendado - meses)"
+            class="form-control" value="{{ request.form['form_intervalo_doses_rec'] or '%0.2f'|format(reg_vacinas['vcn_intervalo_doses_rec']|float)}}">
+      </div>
+      <div class="form-group">
+        <label for="form_intervalo_doses_min">Intervalo entre doses (mínimo - meses)</label>
+        <input type="text" name="form_intervalo_doses_min" placeholder="Intervalor entre doses (mínimo - meses)"
+            class="form-control" value="{{ request.form['form_intervalo_doses_min'] or '%0.2f'|format(reg_vacinas['vcn_intervalo_doses_min']|float)}}">
+      </div>
+      <div class="form-group">
+        <label for="form_via_administracaoc">Via de administração</label>
+        <input type="text" name="form_via_administracao" placeholder="Via de administração"
+            class="form-control" value="{{ request.form['form_via_administracao'] or reg_vacinas['vcn_via_administracao']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_local_aplicacao">Local de aplicação</label>
+        <input type="text" name="form_local_aplicacao" placeholder="Local de aplicação"
+            class="form-control" value="{{ request.form['form_local_aplicacao'] or reg_vacinas['vcn_local_aplicacao']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_agulha">Agulha Hipodêmica recomendada</label>
+        <input type="text" name="form_agulha" placeholder="Agulha Hipodêmica recomendada"
+            class="form-control" value="{{ request.form['form_agulha'] or reg_vacinas['vcn_agulha']}}">
+      </div>
+      <br/>
+      <div class="form-group">
+        <button type="button" onclick="{{ url_for('cad_vcn') }}" class="btn btn-primary">Voltar</button>
+        <button type="submit" class="btn btn-primary">Alterar</button>
+      </div>
+    </form>  
+    <form action="{{ url_for('del_vcn', id=reg_vacinas['vcn_id']) }}" method="POST">
+      <input type="submit" value="Excluir"
+            class="btn btn-danger"
+            onclick="return confirm('Você tem certeza que quer apagar ?')">
+    </form>   
+  </p>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Localização de vacinas{% endblock %}</h1>
+<p>
+  <form method="POST">
+    <div class="form-group">
+      <label for="form_lote">Lote</label>
+      <input type="text" name="form_lote"
+         placeholder="Lote" class="form-control"></input>
+    </div>
+    <div class="form-group">
+      <label for="form_vacina">Vacina</label>
+      <input type="text" name="form_vacina"
+         placeholder="Vacina" class="form-control"></input>
+    </div>
+    <div class="form-group">
+      <label for="form_ubs">UBS</label>
+      <input type="number" name="form_ubs"
+         placeholder="UBS" class="form-control"></input>
+    </div>
+    </br>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+  </div>
+<br/>
+</p>
+
+{% endblock %}

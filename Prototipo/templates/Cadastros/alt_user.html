@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{% block title %}Cadastro de usuários - "{{ reg_user['usr_nome'] }}" {% endblock %}</h2>
+  <p>
+    <form method="post">
+      <div class="form-group">
+        <label for="form_nome">Nome (*)</label>
+        <input type="text" name="form_nome"
+             placeholder="Nome do usuário" class="form-control"
+           value="{{ request.form['form_nome'] or reg_user['usr_nome'] }}"></input>
+      </div>
+      <br>
+      <div class="form-group">
+        UBS
+        <select name="form_ubs">
+           {% for lista in lista_ubs %}
+              {% if (lista['ubs_id'] == reg_user['usr_ubs']) %}
+                <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
+              {% else %}
+                <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
+              {% endif %}
+           {% endfor %}
+        </select>
+     </div>
+      <br/>
+      <div class="form-group">
+          <button type="submit" class="btn btn-primary">Alterar</button>
+      </div>
+      </form>  
+      <form action="{{ url_for('del_user', id=reg_user['usr_id']) }}" method="POST">
+        <input type="submit" value="Excluir"
+              class="btn btn-danger"
+              onclick="return confirm('Você tem certeza que quer apagar ?')">
+      </form>
+</p>
+{% endblock %}
