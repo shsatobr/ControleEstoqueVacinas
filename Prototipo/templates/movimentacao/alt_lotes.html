@@ -5,14 +5,14 @@
   <p>
     <form method="POST">
       <div class="form-group">
-        <label for="form_lote">Código do lote(*)</label>
-        <input type="number" name="form_lote"
+        <label for="form_lote">Código do lote</label>
+        <input readonly type="number" name="form_lote"
              placeholder="Código do lote" class="form-control"
              value="{{ request.form['form_lote'] or reg_lts['lts_lote']}}"></input>
       </div>
       <div class="form-group">
-        <label for="form_vacina">Código do vacina (*)</label>
-        <input type="number" name="form_vacina"
+        <label for="form_vacina">Código do vacina</label>
+        <input readonly type="number" name="form_vacina"
              placeholder="Código da vacina" class="form-control"
            value="{{ request.form['form_vacina'] or reg_lts['lts_vacina']}}"></input>
       </div>
@@ -21,14 +21,11 @@
         <input readonly type="text" name="form_vacina_nome" class="form-control"
            value="{{ reg_lts.lote.vcn_nome }}"></input>
       </div>
-      <div class="form-group">
-        <label for="form_val_vacina">Validade da vacina(*)</label>
-        <input type="date" name="form_val_vacina" class="form-control"
-           value="{{ request.form['form_val_vacina'] or reg_lts['lts_val_vacina'].strftime('%Y-%m-%d')}}"></input>
-      </div>
-      <div class="form-group">
-        UBS
-        <select name="form_ubs">
+      <div class="form-group form_select">
+        <label for="form_ubs">UBS</label>
+        <input readonly type="text" name="form_ubs"
+           class="form-control" value="{{ reg_lts.lotes.ubs_nome }}"></input>
+        <!-- <select name="form_ubs">
            {% for lista in lista_ubs %}
               {% if (lista['ubs_id'] == reg_lts['lts_ubs']) %}
                 <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
@@ -36,7 +33,12 @@
                 <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
               {% endif %}
            {% endfor %}
-        </select> 
+        </select>  -->
+      </div>
+      <div class="form-group">
+        <label for="form_val_vacina">Validade da vacina(*)</label>
+        <input type="date" name="form_val_vacina" class="form-control"
+           value="{{ request.form['form_val_vacina'] or reg_lts['lts_val_vacina'].strftime('%Y-%m-%d')}}"></input>
       </div>
       <div class="form-group">
         <label for="form_nota_fiscal">Nota Fiscal</label>
@@ -51,15 +53,15 @@
             value="{{ request.form['form_dt_recebimento'] or reg_lts['lts_dt_recebimento'].strftime('%Y-%m-%d')}}"></input>
       </div>
       <div class="form-group">
-         <label for="form_qtde_rec">Quantidade recebida</label>
-         <input type="number" name="form_qtde_rec"
+         <label for="form_qtde_rec">Quantidade recebida (*)</label>
+         <input required type="number" name="form_qtde_rec"
             placeholder="Quantidade recebida" class="form-control"
             value="{{ request.form['form_qtde_rec'] or '%0.2f'|format(reg_lts['lts_qtde_rec']|float)}}"></input>
       </div>
       <div class="form-group">
          <label for="form_laboratorio">Laboratório</label>
          <input readonly type="Text" name="form_laboratorio"
-            class="form-control" value="{{ reg_lts['lts_laboratorio']}}"></input>
+            class="form-control" value="{{ reg_lts.lote.vcn_laboratorio }}"></input>
       </div>
       <div class="form-group">
         <label for="form_campanha">Campanha</label>
@@ -71,7 +73,7 @@
         <button type="submit" class="btn btn-primary">Alterar</button>
       </div>
     </form>  
-    <form action="{{ url_for('del_lts', id=reg_lts['lts_lote']) }}" method="POST">
+    <form action="{{ url_for('del_lts', lote=reg_lts['lts_lote'], ubs=reg_lts['lts_ubs']) }}" method="POST">
         <input type="submit" value="Excluir"
               class="btn btn-danger btn-sm"
               onclick="return confirm('Você tem certeza que quer apagar ?')">

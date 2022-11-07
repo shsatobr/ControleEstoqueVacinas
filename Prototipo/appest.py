@@ -73,6 +73,7 @@ class Lotes(db.Model):   # Nome da tabela e campos conforme banco de dados
     lts_campanha = db.Column(db.String(50))
     lts_ubs = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
     lts_mov = db.relationship('Movimentacoes', backref='lotes_mov') #Nome da Classe e campo virtual
+    lts_loc = db.relationship('Localiza_vacinas', backref='lotes_loc') #Nome da Classe e campo virtual
 
 
 class Requisicoes(db.Model):   # Nome da tabela e campos conforme banco de dados
@@ -143,6 +144,13 @@ def get_post_mov(id):
         flash('Movimento não cadastrado')
     return reg_mov
 
+def get_post_loc(lote, ubs):
+    reg_loc = Localiza_vacinas.query.filter_by(loc_lote = lote, loc_ubs = ubs).first()
+    if reg_loc is None:
+        flash('Localização não cadastrada')
+    return reg_loc
+
+
 # Definicao de rotas
 @app.route('/')
 def index():
@@ -195,7 +203,7 @@ def rel_loc():
 def lst_ubs():
     if request.method == 'POST':
         dado = request.form['form_nome']                    # Nomes so sao reconhecidos se estiverem dentro form
-        lista_ubs = Ubs.query.filter(Ubs.ubs_nome.like(dado + "%")) # filter_by somente um linha de retorno
+        lista_ubs = Ubs.query.filter(Ubs.ubs_nome.like("%" + dado + "%")) # filter_by somente um linha de retorno
         return render_template('Cadastros/ubs.html',lista_ubs=lista_ubs)
     else:
         return render_template('Cadastros/lst_ubs.html')
@@ -255,8 +263,18 @@ def del_ubs(id):
 @app.route('/mnucadastro/lstprod', methods=('GET', 'POST'))   # Nao esquecer de colocar os metodos aceitos
 def lst_user():
     if request.method == 'POST':
-        dado = request.form['form_nome']                    # Nomes so sao reconhecidos se estiverem dentro form
-        lista_usr = User.query.filter(User.usr_nome.like(dado + "%")) # filter_by somente um linha de retorno
+        ws_nome = request.form['form_nome']   
+        ws_ubs = request.form['form_ubs']     
+        ws_query = ""   
+        if (ws_nome):
+            ws_query = "usr_nome like '%" + ws_nome + "%'"         # Nomes so sao reconhecidos se estiverem dentro form 
+        if (ws_ubs):
+            if (ws_query == ""):
+                ws_query = "usr_ubs = " + ws_ubs
+            else:
+                ws_query = ws_query + "and usr_ubs = " + ws_ubs
+        # lista_usr = User.query.filter(User.usr_nome.like("%" + ws_nome + "%")) # filter_by somente um linha de retorno
+        lista_usr = User.query.filter(text(ws_query))
         return render_template('Cadastros/user.html',lista_user=lista_usr)
     else:
         return render_template('Cadastros/lst_user.html')
@@ -307,7 +325,7 @@ def del_user(id):
 def lst_vcn():
     if request.method == 'POST':
         dado = request.form['form_nome']                    # Nomes so sao reconhecidos se estiverem dentro form
-        lista_vcn = Vacinas.query.filter(Vacinas.vcn_nome.like(dado + "%")) # filter_by somente um linha de retorno
+        lista_vcn = Vacinas.query.filter(Vacinas.vcn_nome.like("%" + dado + "%")) # filter_by somente um linha de retorno
         return render_template('Cadastros/vacinas.html',lista_vacinas=lista_vcn)
     else:
         return render_template('Cadastros/lst_vcn.html')
@@ -412,8 +430,23 @@ def del_vcn(id):
 @app.route('/mnucadastro/lst_lotes', methods=('GET', 'POST'))   # Nao esquecer de colocar os metodos aceitos
 def lst_lts():
     if request.method == 'POST':
-        dado = request.form['form_lote']                    # Nomes so sao reconhecidos se estiverem dentro form
-        lista_lts = Lotes.query.filter(Lotes.lts_lote.like(dado + "%")) # filter_by somente um linha de retorno
+        ws_lote = request.form['form_lote']                    # Nomes so sao reconhecidos se estiverem dentro form
+        ws_vacina = request.form['form_vacina']
+        ws_ubs = request.form['form_ubs']
+        ws_query = ""
+        if (ws_lote):
+            ws_query = "lts_lote = " + ws_lote
+        if (ws_vacina):
+            if (ws_query == ""):
+                ws_query = "lts_vacina = " + ws_vacina
+            else:
+                ws_query = ws_query + " and lts_vacina = " + ws_vacina
+        if (ws_ubs):
+            if (ws_query == ""):
+                ws_query = "lts_ubs = " + ws_ubs
+            else:
+                ws_query = ws_query + " and lts_ubs = " + ws_ubs
+        lista_lts = Lotes.query.filter(text(ws_query)) # filter_by somente um linha de retorno
         if (lista_lts):
             return render_template('movimentacao/lotes.html',lista_lotes=lista_lts)
         else:
@@ -427,18 +460,27 @@ def alt_lts(id):
     lista_ubs = Ubs.query.all()           # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA TABELA
     if request.method == 'POST':
         erro = False
+        ws_qtde_ant = float(reg_lts.lts_qtde_rec)
         ws_vacina = request.form['form_vacina']
         ws_val_vacina = datetime.strptime(request.form['form_val_vacina'],"%Y-%m-%d")
         ws_nota_fiscal = request.form['form_nota_fiscal']
         ws_dt_recebimento = datetime.strptime(request.form['form_dt_recebimento'],"%Y-%m-%d")
-        ws_qtde_rec = request.form['form_qtde_rec']
+        ws_qtde_rec = float(request.form['form_qtde_rec'])
         ws_campanha = request.form['form_campanha']
         ws_reg_vcn = get_post_vcn(ws_vacina)
-        ws_ubs = request.form['form_ubs']
+        reg_loc = get_post_loc(reg_lts.lts_lote, reg_lts.lts_ubs)
+        # ws_ubs = request.form['form_ubs']
+        ws_ubs = reg_lts.lts_ubs
+        ws_saldo = float(reg_loc.loc_qtde) - float(reg_loc.loc_qtde_usada) - float(reg_loc.loc_qtde_reserva) - ws_qtde_ant + ws_qtde_rec
+        if (ws_saldo < 0):
+            flash("Impossível alterar essa quantidade. Saldo disponível ficaria negativo")
+            erro = True
         if not ws_vacina:
             flash('Vacina é obrigatório','error')
             erro = True
         if (not ws_reg_vcn):
+            erro = True
+        if (not reg_loc):
             erro = True
         if (ws_val_vacina < ws_dt_recebimento):
             flash('Data de validde menor que a data de recebimento')
@@ -454,6 +496,7 @@ def alt_lts(id):
             reg_lts.lts_qtde_rec = ws_qtde_rec
             reg_lts.lts_campanha= ws_campanha
             reg_lts.lts_ubs = ws_ubs
+            reg_loc.loc_qtde = ws_qtde_rec
             db.session.commit()
             flash('Registro alterado')
             return redirect(url_for('cad_lts'))
@@ -506,12 +549,17 @@ def inc_lts():
             return redirect(url_for('cad_lts'))
     return render_template('movimentacao/inc_lotes.html', lista_ubs=lista_ubs)
 
-@app.route('/mnucadastro/<int:id>/lts_del', methods=('GET', 'POST'))
-def del_lts(id):
-    reg_lts = get_post_lts(id)
-    db.session.delete(reg_lts)
-    db.session.commit()
-    flash('"{}" foi apagado com sucesso'.format(reg_lts.lts_lote))
+@app.route('/mnucadastro/<int:lote>/<int:ubs>/lts_del', methods=('GET', 'POST'))
+def del_lts(lote, ubs):
+    reg_lts = get_post_lts(lote)
+    reg_loc = get_post_loc(lote, ubs)
+    if (reg_loc.loc_qtde_usada or reg_loc.loc_qtde_reserva):
+        flash('Lote com movimento, não é possível excluir')
+    else:
+        db.session.delete(reg_lts)
+        db.session.delete(reg_loc)
+        db.session.commit()
+        flash('"{}" foi apagado com sucesso'.format(reg_lts.lts_lote))
     return redirect(url_for('cad_lts'))
 
 # Requisições
@@ -719,6 +767,7 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
                 erro = True
         else:
             ws_ubs_dest = 999
+            ws_requisicao = 0
             ws_reg_locd = ""
         ws_qtde = float(request.form['form_qtde'])
         ws_reg_lts = get_post_lts(ws_lote)
@@ -738,11 +787,18 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
             ws_loc_qtde_usada = float(ws_reg_loco.loc_qtde_usada)
             ws_loc_qtde_atual = ws_loc_qtde_usada + ws_qtde
             ws_disponivel = ws_loc_qtde - ws_loc_qtde_atual - ws_loc_qtde_reserva
-            if (ws_disponivel < 0):
-                erro = True
-                flash("Quantidade usada maior que o saldo disponivel")
+            if (ws_motivo == "1"):
+                if (ws_loc_qtde_reserva < ws_qtde):
+                    flash('Quantidade maior que a quantidade reservada')
+                    erro = True
+                else:
+                    ws_reg_loco.loc_qtde_reserva = float(ws_reg_loco.loc_qtde_reserva) - ws_qtde
             else:
-                ws_reg_loco.loc_qtde_usada = ws_loc_qtde_atual
+                if (ws_disponivel < 0):
+                    erro = True
+                    flash("Quantidade usada maior que o saldo disponivel")
+                else:
+                    ws_reg_loco.loc_qtde_usada = ws_loc_qtde_atual
         if ( not erro):
             reg_mov = Movimentacoes(mov_dt_mov = ws_dt_mov,
                             mov_vacina=ws_vacina,
@@ -753,7 +809,7 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
                             mov_motivo=ws_motivo,
                             mov_lote = ws_lote)
             if (ws_motivo == "1"):
-                ws_reg_loco.loc_qtde_reserva = float(ws_reg_loco.loc_qtde_reserva) - ws_qtde
+                ws_reg_req.req_atendida = float(ws_reg_req.req_atendida) + ws_qtde
                 if (not ws_reg_locd):
                     ws_loc_vcn = ws_vacina
                     ws_loc_ubs = ws_ubs_dest

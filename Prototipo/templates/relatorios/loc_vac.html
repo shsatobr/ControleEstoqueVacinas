@@ -12,7 +12,7 @@
       <th>Vacina</th>
       <th>Nome da vacina</th>
       <th>Lote</th>
-      <th>Requisição</th>
+      <th>Validade</th>
       <th>UBS</th>
       <th>Nome da UBS</th>
       <th>Quantidade</th>
@@ -26,7 +26,7 @@
         <td>{{ lista['loc_vcn'] }}</td>
         <td>{{ lista.local_vcn.vcn_nome }}</td>
         <td>{{ lista['loc_lote'] }}</td>
-        <td>{{ lista['loc_requisicao'] }}</td>
+        <td>{{ lista.lotes_loc.lts_val_vacina.strftime('%d-%m-%Y') }}</td>
         <td>{{ lista['loc_ubs'] }}</td>
         <td>{{ lista.local_ubs.ubs_nome }}</td>
         <td>{{ "%0.2f"|format(lista['loc_qtde']|float) }}</td>
