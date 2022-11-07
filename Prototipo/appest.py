@@ -85,6 +85,7 @@ class Requisicoes(db.Model):   # Nome da tabela e campos conforme banco de dados
     req_responsavel = db.Column(db.String(50))
     req_dt_solic = db.Column(db.DateTime, default=datetime.now())
     req_atendida = db.Column(db.Numeric)
+    req_lote = db.Column(db.Integer)
   
 class Movimentacoes(db.Model):   # Nome da tabela e campos conforme banco de dados
     mov_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -581,14 +582,28 @@ def alt_req(id):
     reg_req = get_post_req(id)
     if request.method == 'POST':
         erro=False
+        ws_qtde_ant = float(reg_req.req_qtde)
+        ws_lote_ant = reg_req.req_lote
+        ws_ubs_ant = reg_req.req_UBS_orig
         ws_id = request.form['form_id']
         ws_dt_solic = datetime.strptime(request.form['form_dt_solic'],"%Y-%m-%d")
         ws_vacina = request.form['form_vacina']
+        ws_lote = request.form['form_lote']
         ws_reg_vcn = get_post_vcn(ws_vacina)
         ws_ubs_orig = request.form['form_ubs_orig']
         ws_ubs_dest = request.form['form_ubs_dest']
-        ws_qtde = request.form['form_qtde']
+        ws_qtde = float(request.form['form_qtde'])
         ws_responsavel = request.form['form_responsavel']
+        if (ws_ubs_ant == ws_ubs_orig):
+            reg_loco = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_orig, loc_lote = ws_lote).first()
+            ws_disponivel = float(reg_loco.loc_qtde) - float(reg_loco.loc_qtde_usada) - float(reg_loco.loc_qtde_reserva) + ws_qtde_ant - ws_qtde
+            reg_loco.loc_qtde_reserva = ws_qtde
+        else:
+            reg_loco_new = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_orig, loc_lote = ws_lote).first()
+            ws_disponivel = float(reg_loco.loc_qtde) - float(reg_loco.loc_qtde_usada) - float(reg_loco.loc_qtde_reserva) + ws_qtde_ant - ws_qtde
+        if (ws_disponivel < 0):
+            flash("Saldo insuficiente")
+            erro = True
         if not ws_vacina:
             flash('Vacina é obrigatório','error')
             erro = True
@@ -597,6 +612,9 @@ def alt_req(id):
             erro = True
         if (not ws_reg_vcn):
             erro = True
+        if (not reg_loco):
+            erro = True
+            flash("Localização não encontrada")
         if (not erro):
             reg_req.req_id = ws_id
             reg_req.req_dt_solic = ws_dt_solic
@@ -656,6 +674,7 @@ def inc_req():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
                             req_UBS_orig=ws_ubs_orig,
                             req_UBS_dest=ws_ubs_dest,
                             req_qtde=ws_qtde,
+                            req_lote = ws_lote,
                             req_responsavel=ws_responsavel,
                             req_atendida = 0)
 

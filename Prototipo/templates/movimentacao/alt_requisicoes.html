@@ -5,7 +5,7 @@
   <p>
     <form method="POST">
       <div class="form-group">
-        <label for="form_lote">Código da requisição (*)</label>
+        <label for="form_lote">Código da requisição</label>
         <input readonly type="number" name="form_id"
              placeholder="Código da requisição" class="form-control"
              value="{{ request.form['form_id'] or reg_req['req_id']}}"></input>
@@ -14,49 +14,54 @@
         <label for="form_dt_solic">Data da solicitação</label>
         <input readonly type="date" name="form_dt_solic"
              class="form-control" value="{{ request.form['form_dt_solic'] or reg_req['req_dt_solic'].strftime('%Y-%m-%d') }}"></input>
-     </div>
-     <div class="form-group">
-        <label for="form_vacina">Vacina(*)</label>
-        <input type="number" name="form_vacina" class="form-control"
-           value="{{ request.form['form_vacina'] or reg_req['req_vacina'] }}"></input>
-     </div>
-     <div class="form-group">
-      UBS de origem
-      <select name="form_ubs_orig">
-         {% for lista in lista_ubs %}
-            {% if (lista['ubs_id'] == reg_req['req_UBS_orig']) %}
-              <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
-            {% else %}
-              <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
-            {% endif %}
-         {% endfor %}
-      </select>
       </div>
       <div class="form-group">
-        UBS de destino
-        <select name="form_ubs_dest">
+        <label for="form_lote">Lote (*)</label>
+        <input required type="number" name="form_lote" class="form-control"
+           value="{{ request.form['form_lote'] or reg_req['req_lote'] }}"></input>
+      </div>
+      <div class="form-group">
+        <label for="form_vacina">Vacina (*)</label>
+        <input readonly type="number" name="form_vacina" class="form-control"
+           value="{{ request.form['form_vacina'] or reg_req['req_vacina'] }}"></input>
+      </div>
+      <div class="form-group form_select">
+        UBS de origem
+        <select name="form_ubs_orig">
            {% for lista in lista_ubs %}
-              {% if (lista['ubs_id'] == reg_req['req_UBS_dest']) %}
+              {% if (lista['ubs_id'] == reg_req['req_UBS_orig']) %}
                 <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
               {% else %}
                 <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
               {% endif %}
-           {% endfor %}
+          {% endfor %}
         </select>
-        </div>
-        <div class="form-group">
-         <label for="form_qtde">Quantidade</label>
-         <input type="number" name="form_qtde"
+      </div>
+      <div class="form-group form_select">
+          UBS de destino
+          <select name="form_ubs_dest">
+             {% for lista in lista_ubs %}
+                {% if (lista['ubs_id'] == reg_req['req_UBS_dest']) %}
+                  <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
+                {% else %}
+                  <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
+                {% endif %}
+            {% endfor %}
+          </select>
+      </div>
+      <div class="form-group">
+        <label for="form_qtde">Quantidade</label>
+        <input type="number" name="form_qtde"
             placeholder="Quantidade" class="form-control"
             value="{{ request.form['form_qtde'] or '%0.2f'|format(reg_req['req_qtde']|float)}}"></input>
       </div>
       <div class="form-group">
-         <label for="form_responsavel">Responsável</label>
-         <input type="Text" name="form_responsavel"
+        <label for="form_responsavel">Responsável</label>
+        <input type="Text" name="form_responsavel"
             placeholder="Responsavel" class="form-control"
             value="{{ request.form['form_responsavel'] or reg_req['req_responsavel'] }}"></input>
       </div>
-    <div class="form-group">
+      <div class="form-group">
         <button type="submit" class="btn btn-primary">Alterar</button>
       </div>
     </form>  
