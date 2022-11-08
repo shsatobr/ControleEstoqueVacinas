@@ -521,10 +521,10 @@ def inc_lts():
             flash('O código da vacina é obrigatório') 
             erro = True
         if (ws_val_vacina < ws_dt_recebimento):
-            flash("Data de vencimento menor que a data de recebimento") # Checar se o vencimento é menor ou igual a data atual
+            flash("Data de validade menor que a data de recebimento") # Checar se o vencimento é menor ou igual a data atual
             erro = True
         if (ws_val_vacina < datetime.today()):
-            flash("Data de validade menor que a data de hoje")
+            flash("Data de validade menor ou igual a data de hoje")
             erro = True
         if ( not ws_reg_vcn):
             erro = True
@@ -597,10 +597,11 @@ def alt_req(id):
         if (ws_ubs_ant == ws_ubs_orig):
             reg_loco = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_orig, loc_lote = ws_lote).first()
             ws_disponivel = float(reg_loco.loc_qtde) - float(reg_loco.loc_qtde_usada) - float(reg_loco.loc_qtde_reserva) + ws_qtde_ant - ws_qtde
-            reg_loco.loc_qtde_reserva = ws_qtde
+            reg_loco.loc_qtde_reserva = ws_qtde # Verificar <-----------------------------
         else:
+            reg_loco = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_ant, loc_lote = ws_lote).first()
             reg_loco_new = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_orig, loc_lote = ws_lote).first()
-            ws_disponivel = float(reg_loco.loc_qtde) - float(reg_loco.loc_qtde_usada) - float(reg_loco.loc_qtde_reserva) + ws_qtde_ant - ws_qtde
+            ws_disponivel = float(reg_loco_new.loc_qtde) - float(reg_loco_new.loc_qtde_usada) - float(reg_loco_new.loc_qtde_reserva) - ws_qtde
         if (ws_disponivel < 0):
             flash("Saldo insuficiente")
             erro = True
