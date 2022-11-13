@@ -1,15 +1,19 @@
-from email.policy import default
+import os
 import sqlite3
-from flask import Flask, render_template, request, url_for, flash, redirect
+from datetime import datetime
+from decimal import Decimal
+from email.policy import default
+
+from flask import (Flask, flash, jsonify, redirect, render_template, request,
+                   url_for)
 from flask.typing import TemplateFilterCallable
-from sqlalchemy.orm import backref
+from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from sqlalchemy.orm import backref
 from werkzeug.datastructures import ContentRange
 from werkzeug.exceptions import MethodNotAllowed, abort
-from flask_sqlalchemy import SQLAlchemy
-from decimal import Decimal
-from datetime import datetime
-import os
+from flask_cors import CORS
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 database_file = "sqlite:///{}".format(os.path.join(project_dir, "database.db"))
@@ -18,6 +22,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'JcCwEUu3ZLzQc96'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_file
 db = SQLAlchemy(app)
+ma = Marshmallow(app)
+cors=CORS(app, resources={r"/*":{"origins":"*"}})
+
 
 # Definicao das tabelas do banco de dados
 class Ubs(db.Model):   # Nome da tabela e campos conforme banco de dados
@@ -107,8 +114,15 @@ class Localiza_vacinas(db.Model):   # Nome da tabela e campos conforme banco de 
     loc_qtde_usada = db.Column(db.Numeric)
     loc_qtde_reserva = db.Column(db.Numeric)
   
+# Marshmallow
+class UbsSchema(ma.Schema):
+    class Meta:
+        fields = ("ubs_id","ubs_nome","ubs_endereco","ubs_numero","ubs_bairro","ubs_telefone","ubs_responsavel")
+        model = Ubs
+ubs_schema = UbsSchema()
+ubss_schema = UbsSchema(many=True)
 
-# Rotinas de CRUD
+# Rotinas de CRUD (Gets)
 def get_post_ubs(id):
     reg_ubs = Ubs.query.filter_by(ubs_id=id).first()
     if reg_ubs is None:
@@ -151,6 +165,22 @@ def get_post_loc(lote, ubs):
         flash('Localização não cadastrada')
     return reg_loc
 
+# Rotinas da API
+# UBS
+@app.route('/api/ubs/<int:id>', methods=['GET'])
+def apiubs(id):
+    reg_ubs = Ubs.query.filter_by(ubs_id=id).first()
+    if reg_ubs is None:
+        return jsonify({'mensagem':'UBS não cadastrada'})
+    return ubs_schema.dump(reg_ubs)
+
+@app.route('/api/ubs/', methods=['GET'])
+def apiubss():
+    reg_ubss = Ubs.query.all()
+    if reg_ubss is None:
+        return jsonify({'mensagem':'UBS não cadastrada'})
+    return ubss_schema.jsonify(reg_ubss),200
+    # return ubss_schema.dump(reg_ubss)
 
 # Definicao de rotas
 @app.route('/')
