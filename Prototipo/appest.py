@@ -36,7 +36,8 @@ class Ubs(db.Model):   # Nome da tabela e campos conforme banco de dados
     ubs_telefone = db.Column(db.String(11))
     ubs_responsavel = db.Column(db.String(50))
     ubs_users = db.relationship('User', backref='user') #Nome da Classe e campo virtual
-    ubs_req_origem = db.relationship('Requisicoes', backref='req_origem') #Nome da Classe e campo virtual
+    ubs_req_origem = db.relationship('Requisicoes',foreign_keys="Requisicoes.req_UBS_orig", backref='req_origem') #Nome da Classe e campo virtual
+    ubs_req_dest = db.relationship('Requisicoes',foreign_keys="Requisicoes.req_UBS_dest", backref='req_dest') #Nome da Classe e campo virtual
     ubs_mov = db.relationship('Movimentacoes', backref='mov_ubs') #Nome da Classe e campo virtual
     ubs_lts = db.relationship('Lotes', backref='lotes') #Nome da Classe e campo virtual
     ubs_loc = db.relationship('Localiza_vacinas', backref='local_ubs') #Nome da Classe e campo virtual
@@ -69,7 +70,6 @@ class Vacinas(db.Model):
     vcn_mov = db.relationship('Movimentacoes', backref='mov_vcn') #Nome da Classe e campo virtual
     vcn_loc = db.relationship('Localiza_vacinas', backref='local_vcn') #Nome da Classe e campo virtual
 
-
 class Lotes(db.Model):   # Nome da tabela e campos conforme banco de dados
     lts_lote = db.Column(db.Integer, primary_key=True)
     lts_vacina = db.Column(db.Integer, db.ForeignKey(Vacinas.vcn_id), nullable=False)
@@ -82,12 +82,11 @@ class Lotes(db.Model):   # Nome da tabela e campos conforme banco de dados
     lts_mov = db.relationship('Movimentacoes', backref='lotes_mov') #Nome da Classe e campo virtual
     lts_loc = db.relationship('Localiza_vacinas', backref='lotes_loc') #Nome da Classe e campo virtual
 
-
 class Requisicoes(db.Model):   # Nome da tabela e campos conforme banco de dados
     req_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     req_vacina = db.Column(db.Integer,db.ForeignKey(Vacinas.vcn_id), nullable=False)
     req_UBS_orig = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
-    req_UBS_dest = db.Column(db.Integer)
+    req_UBS_dest = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
     req_qtde = db.Column(db.Numeric)
     req_responsavel = db.Column(db.String(50))
     req_dt_solic = db.Column(db.DateTime, default=datetime.now())
