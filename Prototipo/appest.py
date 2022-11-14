@@ -21,6 +21,7 @@ database_file = "sqlite:///{}".format(os.path.join(project_dir, "database.db"))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'JcCwEUu3ZLzQc96'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_file
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        # Retira aviso de "adds significant overhead"
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 cors=CORS(app, resources={r"/*":{"origins":"*"}})
