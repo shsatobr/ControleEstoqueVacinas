@@ -1,15 +1,19 @@
-from email.policy import default
+import os
 import sqlite3
-from flask import Flask, render_template, request, url_for, flash, redirect
+from datetime import datetime
+from decimal import Decimal
+from email.policy import default
+
+from flask import (Flask, flash, jsonify, redirect, render_template, request,
+                   url_for)
 from flask.typing import TemplateFilterCallable
-from sqlalchemy.orm import backref
+from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from sqlalchemy.orm import backref
 from werkzeug.datastructures import ContentRange
 from werkzeug.exceptions import MethodNotAllowed, abort
-from flask_sqlalchemy import SQLAlchemy
-from decimal import Decimal
-from datetime import datetime
-import os
+from flask_cors import CORS
 
 project_dir = os.path.dirname(os.path.abspath(__file__))
 database_file = "sqlite:///{}".format(os.path.join(project_dir, "database.db"))
@@ -17,7 +21,11 @@ database_file = "sqlite:///{}".format(os.path.join(project_dir, "database.db"))
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'JcCwEUu3ZLzQc96'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_file
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False        # Retira aviso de "adds significant overhead"
 db = SQLAlchemy(app)
+ma = Marshmallow(app)
+cors=CORS(app, resources={r"/*":{"origins":"*"}})
+
 
 # Definicao das tabelas do banco de dados
 class Ubs(db.Model):   # Nome da tabela e campos conforme banco de dados
@@ -29,7 +37,8 @@ class Ubs(db.Model):   # Nome da tabela e campos conforme banco de dados
     ubs_telefone = db.Column(db.String(11))
     ubs_responsavel = db.Column(db.String(50))
     ubs_users = db.relationship('User', backref='user') #Nome da Classe e campo virtual
-    ubs_req_origem = db.relationship('Requisicoes', backref='req_origem') #Nome da Classe e campo virtual
+    ubs_req_origem = db.relationship('Requisicoes',foreign_keys="Requisicoes.req_UBS_orig", backref='req_origem') #Nome da Classe e campo virtual
+    ubs_req_dest = db.relationship('Requisicoes',foreign_keys="Requisicoes.req_UBS_dest", backref='req_dest') #Nome da Classe e campo virtual
     ubs_mov = db.relationship('Movimentacoes', backref='mov_ubs') #Nome da Classe e campo virtual
     ubs_lts = db.relationship('Lotes', backref='lotes') #Nome da Classe e campo virtual
     ubs_loc = db.relationship('Localiza_vacinas', backref='local_ubs') #Nome da Classe e campo virtual
@@ -62,7 +71,6 @@ class Vacinas(db.Model):
     vcn_mov = db.relationship('Movimentacoes', backref='mov_vcn') #Nome da Classe e campo virtual
     vcn_loc = db.relationship('Localiza_vacinas', backref='local_vcn') #Nome da Classe e campo virtual
 
-
 class Lotes(db.Model):   # Nome da tabela e campos conforme banco de dados
     lts_lote = db.Column(db.Integer, primary_key=True)
     lts_vacina = db.Column(db.Integer, db.ForeignKey(Vacinas.vcn_id), nullable=False)
@@ -75,12 +83,11 @@ class Lotes(db.Model):   # Nome da tabela e campos conforme banco de dados
     lts_mov = db.relationship('Movimentacoes', backref='lotes_mov') #Nome da Classe e campo virtual
     lts_loc = db.relationship('Localiza_vacinas', backref='lotes_loc') #Nome da Classe e campo virtual
 
-
 class Requisicoes(db.Model):   # Nome da tabela e campos conforme banco de dados
     req_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     req_vacina = db.Column(db.Integer,db.ForeignKey(Vacinas.vcn_id), nullable=False)
     req_UBS_orig = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
-    req_UBS_dest = db.Column(db.Integer)
+    req_UBS_dest = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
     req_qtde = db.Column(db.Numeric)
     req_responsavel = db.Column(db.String(50))
     req_dt_solic = db.Column(db.DateTime, default=datetime.now())
@@ -107,8 +114,15 @@ class Localiza_vacinas(db.Model):   # Nome da tabela e campos conforme banco de 
     loc_qtde_usada = db.Column(db.Numeric)
     loc_qtde_reserva = db.Column(db.Numeric)
   
+# Marshmallow
+class UbsSchema(ma.Schema):
+    class Meta:
+        fields = ("ubs_id","ubs_nome","ubs_endereco","ubs_numero","ubs_bairro","ubs_telefone","ubs_responsavel")
+        model = Ubs
+ubs_schema = UbsSchema()
+ubss_schema = UbsSchema(many=True)
 
-# Rotinas de CRUD
+# Rotinas de CRUD (Gets)
 def get_post_ubs(id):
     reg_ubs = Ubs.query.filter_by(ubs_id=id).first()
     if reg_ubs is None:
@@ -151,6 +165,27 @@ def get_post_loc(lote, ubs):
         flash('Localização não cadastrada')
     return reg_loc
 
+# Funções auxiliares
+def calcula_saldo_loc(ws_loc_qtde,ws_loc_qtde_usada,ws_loc_qtde_reserva,ws_loc_qtde_ant,ws_loc_qtde_rec):
+    ws_saldo = ws_loc_qtde - ws_loc_qtde_usada - ws_loc_qtde_reserva - ws_loc_qtde_ant + ws_loc_qtde_rec
+    return ws_saldo
+
+# Rotinas da API
+# UBS
+@app.route('/api/ubs/<int:id>', methods=['GET'])
+def apiubs(id):
+    reg_ubs = Ubs.query.filter_by(ubs_id=id).first()
+    if reg_ubs is None:
+        return jsonify({'mensagem':'UBS não cadastrada'})
+    return ubs_schema.dump(reg_ubs)
+
+@app.route('/api/ubs/', methods=['GET'])
+def apiubss():
+    reg_ubss = Ubs.query.all()
+    if reg_ubss is None:
+        return jsonify({'mensagem':'UBS não cadastrada'})
+    return ubss_schema.jsonify(reg_ubss),200
+    # return ubss_schema.dump(reg_ubss)
 
 # Definicao de rotas
 @app.route('/')
@@ -197,7 +232,6 @@ def cad_mov():
 def rel_loc():
     lista_locs = Localiza_vacinas.query.all()
     return render_template('relatorios/loc_vac.html', lista_locs=lista_locs)
-
 
 # UBS
 @app.route('/mnucadastro/lst_ubs', methods=('GET', 'POST'))   # Nao esquecer de colocar os metodos aceitos
@@ -470,7 +504,6 @@ def alt_lts(id):
         ws_campanha = request.form['form_campanha']
         ws_reg_vcn = get_post_vcn(ws_vacina)
         reg_loc = get_post_loc(reg_lts.lts_lote, reg_lts.lts_ubs)
-        # ws_ubs = request.form['form_ubs']
         ws_ubs = reg_lts.lts_ubs
         ws_saldo = float(reg_loc.loc_qtde) - float(reg_loc.loc_qtde_usada) - float(reg_loc.loc_qtde_reserva) - ws_qtde_ant + ws_qtde_rec
         if (ws_saldo < 0):
@@ -484,7 +517,7 @@ def alt_lts(id):
         if (not reg_loc):
             erro = True
         if (ws_val_vacina < ws_dt_recebimento):
-            flash('Data de validde menor que a data de recebimento')
+            flash('Data de validade menor que a data de recebimento')
             erro = True
         if (ws_val_vacina < datetime.today()):
             flash('Data de validade menor ou igual a data de hoje')
@@ -521,10 +554,10 @@ def inc_lts():
             flash('O código da vacina é obrigatório') 
             erro = True
         if (ws_val_vacina < ws_dt_recebimento):
-            flash("Data de vencimento menor que a data de recebimento") # Checar se o vencimento é menor ou igual a data atual
+            flash("Data de validade menor que a data de recebimento") # Checar se o vencimento é menor ou igual a data atual
             erro = True
         if (ws_val_vacina < datetime.today()):
-            flash("Data de validade menor que a data de hoje")
+            flash("Data de validade menor ou igual a data de hoje")
             erro = True
         if ( not ws_reg_vcn):
             erro = True
@@ -597,10 +630,11 @@ def alt_req(id):
         if (ws_ubs_ant == ws_ubs_orig):
             reg_loco = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_orig, loc_lote = ws_lote).first()
             ws_disponivel = float(reg_loco.loc_qtde) - float(reg_loco.loc_qtde_usada) - float(reg_loco.loc_qtde_reserva) + ws_qtde_ant - ws_qtde
-            reg_loco.loc_qtde_reserva = ws_qtde
+            reg_loco.loc_qtde_reserva = ws_qtde # Verificar <-----------------------------
         else:
+            reg_loco = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_ant, loc_lote = ws_lote).first()
             reg_loco_new = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_orig, loc_lote = ws_lote).first()
-            ws_disponivel = float(reg_loco.loc_qtde) - float(reg_loco.loc_qtde_usada) - float(reg_loco.loc_qtde_reserva) + ws_qtde_ant - ws_qtde
+            ws_disponivel = float(reg_loco_new.loc_qtde) - float(reg_loco_new.loc_qtde_usada) - float(reg_loco_new.loc_qtde_reserva) - ws_qtde
         if (ws_disponivel < 0):
             flash("Saldo insuficiente")
             erro = True

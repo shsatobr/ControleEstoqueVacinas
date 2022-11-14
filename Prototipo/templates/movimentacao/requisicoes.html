@@ -28,7 +28,7 @@
         <td>{{ lista['req_UBS_orig'] }}</td>
         <td>{{ lista.req_origem.ubs_nome }}</td>
         <td>{{ lista['req_UBS_dest'] }}</td>
-        <td>{{ ws_ubs_dest }}</td>
+        <td>{{ lista.req_dest.ubs_nome }}</td>
         <td>{{ '%0.2f'|format(lista['req_qtde']|float) }}</td>
         <td>{{ '%0.2f'|format(lista['req_atendida']|float) }}</td>
         <td>{{ lista['req_dt_solic'].strftime("%d-%m-%Y") }}</td>
