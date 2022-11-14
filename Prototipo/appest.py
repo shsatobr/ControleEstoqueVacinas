@@ -164,6 +164,11 @@ def get_post_loc(lote, ubs):
         flash('Localização não cadastrada')
     return reg_loc
 
+# Funções auxiliares
+def calcula_saldo_loc(ws_loc_qtde,ws_loc_qtde_usada,ws_loc_qtde_reserva,ws_loc_qtde_ant,ws_loc_qtde_rec):
+    ws_saldo = ws_loc_qtde - ws_loc_qtde_usada - ws_loc_qtde_reserva - ws_loc_qtde_ant + ws_loc_qtde_rec
+    return ws_saldo
+
 # Rotinas da API
 # UBS
 @app.route('/api/ubs/<int:id>', methods=['GET'])
@@ -226,7 +231,6 @@ def cad_mov():
 def rel_loc():
     lista_locs = Localiza_vacinas.query.all()
     return render_template('relatorios/loc_vac.html', lista_locs=lista_locs)
-
 
 # UBS
 @app.route('/mnucadastro/lst_ubs', methods=('GET', 'POST'))   # Nao esquecer de colocar os metodos aceitos
@@ -499,7 +503,6 @@ def alt_lts(id):
         ws_campanha = request.form['form_campanha']
         ws_reg_vcn = get_post_vcn(ws_vacina)
         reg_loc = get_post_loc(reg_lts.lts_lote, reg_lts.lts_ubs)
-        # ws_ubs = request.form['form_ubs']
         ws_ubs = reg_lts.lts_ubs
         ws_saldo = float(reg_loc.loc_qtde) - float(reg_loc.loc_qtde_usada) - float(reg_loc.loc_qtde_reserva) - ws_qtde_ant + ws_qtde_rec
         if (ws_saldo < 0):
@@ -513,7 +516,7 @@ def alt_lts(id):
         if (not reg_loc):
             erro = True
         if (ws_val_vacina < ws_dt_recebimento):
-            flash('Data de validde menor que a data de recebimento')
+            flash('Data de validade menor que a data de recebimento')
             erro = True
         if (ws_val_vacina < datetime.today()):
             flash('Data de validade menor ou igual a data de hoje')
