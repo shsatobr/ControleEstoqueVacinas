@@ -39,8 +39,6 @@ jobs:
       run: |
         pytest
   
-  deploy:
-    steps:
     - name: Deploy para o Heroku
       run: |
         git add .
