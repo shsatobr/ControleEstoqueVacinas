@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{% block title %}Cadastro de vacinas - Inclusão{% endblock %}</h1>
+  <p>
+    <form method="post">
+      <div class="form-group">
+          <label for="form_nome">Nome (*)</label>
+          <input type="text" name="form_nome"
+               placeholder="Nome da vacina" class="form-control"
+               value="{{ request.form['form_nome']}}"></input>
+      </div>
+      <div class="form-group">
+          <label for="form_protecao">Proteção contra</label>
+          <input type="text" name="form_protecao" placeholder="Proteção contra ..."
+                  class="form-control" value="{{ request.form['form_protecao']}}">
+      </div>
+      <div>
+        <label for="form_est_min">Estoque mínimo</label>
+        <input type="text" name="form_est_min" placeholder="Estoque mínimo"
+                class="form-control" value="{{ request.form['form_est_min']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_est_max">Estoque mácimo</label>
+        <input type="text" name="form_est_max" placeholder="Estoque mácimo"
+                class="form-control" value="{{ request.form['form_est_max']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_vol_dose">Volume por dose</label>
+        <input type="text" name="form_vol_dose" placeholder="Volume por dose"
+              class="form-control" value="{{ request.form['form_vol_dose']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_temperatura">Temperatura ºC</label>
+        <input type="text" name="form_temperatura" placeholder="Temperatura"
+            class="form-control" value="{{ request.form['form_temperatura']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_laboratorio">Laboratório</label>
+        <input type="text" name="form_laboratorio" placeholder="Nome do laboratório"
+            class="form-control" value="{{ request.form['form_laboratorio']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_reacoes">Reações</label>
+        <input type="text" name="form_reacoes" placeholder="Reações"
+            class="form-control" value="{{ request.form['form_reacoes']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_composicao">Composição</label>
+        <input type="text" name="form_composicao" placeholder="Composição"
+            class="form-control" value="{{ request.form['form_composicao']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_doses">Número de doses</label>
+        <input type="text" name="form_doses" placeholder="Número de doses"
+            class="form-control" value="{{ request.form['form_doses']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_idade_rec">Idade recomendada</label>
+        <input type="text" name="form_idade_rec" placeholder="Idade recomendada"
+            class="form-control" value="{{ request.form['form_idade_rec']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_intervalo_doses_rec">Intervalo entre doses (recomendado - meses)</label>
+        <input type="text" name="form_intervalo_doses_rec" placeholder="Intervalor entre doses (recomendado - meses)"
+            class="form-control" value="{{ request.form['form_intervalo_doses_rec']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_intervalo_doses_min">Intervalo entre doses (mínimo - meses)</label>
+        <input type="text" name="form_intervalo_doses_min" placeholder="Intervalo entre doses (mínimo - meses)"
+            class="form-control" value="{{ request.form['form_intervalo_doses_min']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_via_administracaoc">Via de administração</label>
+        <input type="text" name="form_via_administracao" placeholder="Via de administração"
+            class="form-control" value="{{ request.form['form_via_administracao']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_local_aplicacao">Local de aplicação</label>
+        <input type="text" name="form_local_aplicacao" placeholder="Local de aplicação"
+            class="form-control" value="{{ request.form['form_local_aplicacao']}}">
+      </div>
+      <div class="form-group">
+        <label for="form_agulha">Agulha Hipodêmica recomendada</label>
+        <input type="text" name="form_agulha" placeholder="Agulha Hipodêmica recomendada"
+            class="form-control" value="{{ request.form['form_agulha']}}">
+      </div>
+      <br/>
+      <div class="form-group">
+          <button type="submit" class="btn btn-primary">Incluir</button>
+      </div>
+    </form>
+</p>
+{% endblock %}

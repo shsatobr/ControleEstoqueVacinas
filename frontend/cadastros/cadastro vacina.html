@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciador</title>
+    <style>
+
+.relative2{
+    position: relative;
+    left: 20px;
+}
+
+.titulo{
+    font-size: large;
+    font-weight: bolder;
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+    </style>
+</head>
+
+<body>
+        <div class="titulo">Cadastro de lotes de vacinas</div>
+        
+    <form>
+    <label>Lote</label><br>
+    <input type="text" name="lote" size="40" /><br><br>
+
+    <label>Vacina</label><br>
+    <input type="text" name="codigo" size="40" placeholder="Código" /><button class="relative2" type="">Consultar vacinas</button><br><br>
+        
+
+    <label>Validade</label><br>
+    <input type="date" name="validade" size="40" placeholder="" /><br><br>
+
+    <label>Nota fiscal</label><br>
+    <input type="text" name="nota_fiscal" size="40" placeholder="" /><br><br>
+
+    <label>Data de recebimento</label><br>
+    <input type="date" name="recebimento" size="40" placeholder="" /><br><br>
+
+    <label>Quantidade recebida</label><br>
+    <input type="number" name="quantidade" size="40" placeholder="" /><br><br>
+
+    <label>Laboratório</label><br>
+    <input type="text" name="laboratorio" size="40" value="BUSCAR NO BANCO DE DADOS" disabled /><br><br>
+
+    <label>Campanha</label><br>
+    <input type="text" name="campanha" size="40" placeholder="" /></textarea><br><br>
+    <button class="botoes" type="submit">Cadastrar</button> <button class="botoes" type="reset">Limpar campos</button>
+
+
+
+</form>
+</body>
+</html>

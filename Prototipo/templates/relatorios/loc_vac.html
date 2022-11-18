@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Localização de vacinas{% endblock %}</h1>
+<p>
+    <a href="{{ url_for('lst_loc')}}" class="btn btn-primary">Filtrar</a>
+<br/>
+<div>
+  <table class="table table-bordered"> 
+    <tr>
+      <th>id</th>
+      <th>Vacina</th>
+      <th>Nome da vacina</th>
+      <th>Lote</th>
+      <th>Validade</th>
+      <th>UBS</th>
+      <th>Nome da UBS</th>
+      <th>Quantidade</th>
+      <th>Qtde usada</th>
+      <th>Qtde reservada</th>
+      <th>Saldo disponível</th>
+    </tr>
+    {% for lista in lista_locs %}
+      <tr>
+        <td>{{ lista['loc_id'] }}</a></td>
+        <td>{{ lista['loc_vcn'] }}</td>
+        <td>{{ lista.local_vcn.vcn_nome }}</td>
+        <td>{{ lista['loc_lote'] }}</td>
+        <td>{{ lista.lotes_loc.lts_val_vacina.strftime('%d-%m-%Y') }}</td>
+        <td>{{ lista['loc_ubs'] }}</td>
+        <td>{{ lista.local_ubs.ubs_nome }}</td>
+        <td>{{ "%0.2f"|format(lista['loc_qtde']|float) }}</td>
+        <td>{{ "%0.2f"|format(lista['loc_qtde_usada']|float) }}</td>
+        <td>{{ "%0.2f"|format(lista['loc_qtde_reserva']|float) }}</td>
+        <td>{{ "%0.2f"|format((lista['loc_qtde'] - lista['loc_qtde_usada'] - lista['loc_qtde_reserva'])|float) }}</td>
+      </tr>
+    {% endfor %} 
+  </table>
+
+</div>
+</p>
+
+{% endblock %}

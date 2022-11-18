@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %}Inclusão de movimentações{% endblock %}</h1>
+<p>
+    <form method="post">
+      <div class="form-group">
+         <label for="form_lote">Lote(*)</label>
+         <input required type="number" name="form_lote" class="form-control"
+            value="{{ request.form['form_lote']}}"></input>
+      </div>
+      <div class="form-group">
+         <label for="form_vacina">Vacina(*)</label>
+         <input readonly type="number" name="form_vacina" class="form-control"
+            value="{{ request.form['form_vacina']}}"></input>
+      </div>
+      <div onchange="fnc_campos()" class="form-group form_select">
+         Motivo
+         <select id="form_motivo" name="form_motivo">
+            <option value="1">Transferência</option>
+            <option value="2">Uso e consumo</option>
+            <option value="3">Perda</option>
+         </select>
+      </div>
+      <div class="form-group">
+         <label for="form_requisicao">Requisição</label>          <!-- Somente no caso de transferência -->
+         <input required id="form_requisicao" type="number" name="form_requisicao" class="form-control"
+            value="{{ request.form['form_requisicao']}}"></input>
+      </div>
+      <div class="form-group form_select">                                    <!-- Somente no caso de transferência -->
+         UBS de origem
+         <select id="form_ubs_orig" name="form_ubs_orig">
+            {% for lista in lista_ubs %}
+               <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
+            {% endfor %}
+         </select>
+         </div>
+         <div class="form-group form_select">                                 <!-- Nos casos de uso e consumo e perda, significa UBS que usou a vacina -->
+            UBS de destino
+            <select id="form_ubs_dest" name="form_ubs_dest">
+               {% for lista in lista_ubs %}
+                  <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
+               {% endfor %}
+            </select>
+         </div>
+         <div class="form-group">
+            <label for="form_qtde">Quantidade (*)</label>
+            <input required type="number" name="form_qtde"
+               placeholder="Quantidade" class="form-control"
+               value="{{ request.form['form_qtde']}}"></input>
+         </div>
+         <div class="form-group">
+            <label for="form_dt_mov">Data do movimento</label>
+            <input readonly type="date" name="form_dt_mov"
+                 class="form-control" id="date-input" }}></input>
+         </div>
+        <br/>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Incluir</button>
+        </div>
+     </form>
+</p>
+
+{% endblock %}
+{% block scripts %} 
+<script>
+   function fnc_campos() {
+      ws_select = document.getElementById('form_motivo');
+      ws_requisicao = document.getElementById('form_requisicao');
+      ws_ubs_dest = document.getElementById('form_ubs_dest');
+      if (ws_select.value == 1) {
+         ws_requisicao.readOnly = false;
+         ws_ubs_dest.disabled = false;
+         ws_requisicao.required = true
+      }
+      else {
+         ws_requisicao.readOnly = true;
+         ws_ubs_dest.disabled = true;
+         ws_ubs_dest.value = 999
+         ws_requisicao.required = false
+      };
+   }
+</script>
+{% endblock %}

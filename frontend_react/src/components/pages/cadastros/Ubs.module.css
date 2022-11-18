@@ -1,0 +1,11 @@
+.ubs_container {
+    width: 500px;
+    margin: 0 auto;
+    padding: 1em;
+}
+
+.ubs_container h1 {
+    width: 1200px;
+    text-align: center;
+}
+

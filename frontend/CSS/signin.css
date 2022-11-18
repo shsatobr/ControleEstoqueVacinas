@@ -1,0 +1,22 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  /* display: flex; */
+  align-items: center;
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #6bc4c4;
+}
+
+label {
+  font-size: 20px;
+  padding: 50px;
+}
+
+.inputSize {
+  width: 300px;
+}
