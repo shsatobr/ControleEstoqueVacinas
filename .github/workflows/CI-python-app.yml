@@ -39,10 +39,12 @@ jobs:
       run: |
         pytest
   
-    - uses: actions/checkout@v2
     - name: Deploy para o Heroku
-    - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
-      with:
+      env:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
         heroku_app_name: "controle-vacinas-vgp" #Must be unique in Heroku
         heroku_email: "shsatobr@yahoo.com.br"
+      if: github.ref === 'refs/header/master' && job.status == 'sucess'
+      run: |
+        git remote add heroku https://heroku/$heroku_api_key@git.heroku.com/$heroku_app_name.git
+        git push heroku HEAD:master -f
