@@ -38,3 +38,11 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+  
+  deploy:
+    steps:
+    - name: Deploy para o Heroku
+      run: |
+        git add .
+        git commit -am "Deploy direto do github actions"
+        git push heroku master
