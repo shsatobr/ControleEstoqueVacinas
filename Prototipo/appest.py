@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import pandas as pd
 from datetime import datetime
 from decimal import Decimal
 from email.policy import default
@@ -122,6 +123,14 @@ class UbsSchema(ma.Schema):
 ubs_schema = UbsSchema()
 ubss_schema = UbsSchema(many=True)
 
+class LocalizaSchema(ma.Schema):
+    class Meta:
+        fields = ("loc_id","loc_vcn","loc_ubs","loc_lote","loc_qtde","loc_qtde_usada","loc_qtde_reserva")
+        model = Localiza_vacinas
+local_schema = LocalizaSchema()
+locals_schema = LocalizaSchema(many=True)
+
+
 # Rotinas de CRUD (Gets)
 def get_post_ubs(id):
     reg_ubs = Ubs.query.filter_by(ubs_id=id).first()
@@ -165,6 +174,13 @@ def get_post_loc(lote, ubs):
         flash('Localização não cadastrada')
     return reg_loc
 
+def get_post_saldos():
+    df = pd.read_json('http://localhost:5000/api/localizacao/')
+    print(df)
+    df_soma = df[["loc_vcn", "loc_qtde","loc_qtde_usada","loc_qtde_reserva"]].groupby("loc_vcn", as_index= False).sum()
+    return df_soma.values.tolist()
+    # return df_soma.to_html()
+
 # Funções auxiliares
 def calcula_saldo_loc(ws_loc_qtde,ws_loc_qtde_usada,ws_loc_qtde_reserva,ws_loc_qtde_ant,ws_loc_qtde_rec):
     ws_saldo = ws_loc_qtde - ws_loc_qtde_usada - ws_loc_qtde_reserva - ws_loc_qtde_ant + ws_loc_qtde_rec
@@ -186,6 +202,14 @@ def apiubss():
         return jsonify({'mensagem':'UBS não cadastrada'})
     return ubss_schema.jsonify(reg_ubss),200
     # return ubss_schema.dump(reg_ubss)
+
+@app.route('/api/localizacao/', methods=['GET'])
+def api_local():
+    reg_local = Localiza_vacinas.query.all()
+    if reg_local is None:
+        return jsonify({'mensagem':'Localizações não cadastrada'})
+    return locals_schema.jsonify(reg_local),200
+
 
 # Definicao de rotas
 @app.route('/')
@@ -213,6 +237,7 @@ def cad_vcn():
     lista_vcn = Vacinas.query.all()
     return render_template('Cadastros/vacinas.html', lista_vacinas=lista_vcn)
 
+# Rotas de Movimentação
 @app.route('/mnumov/lotes', methods=('GET', 'POST'))
 def cad_lts():
     lista_lts = Lotes.query.all()
@@ -228,10 +253,25 @@ def cad_mov():
     lista_mov = Movimentacoes.query.all()
     return render_template('movimentacao/mov_vac.html', lista_movs=lista_mov)
 
+# Rotas de Relatórios
+
 @app.route('/mnurel/localizacoes', methods=('GET', 'POST'))
 def rel_loc():
     lista_locs = Localiza_vacinas.query.all()
     return render_template('relatorios/loc_vac.html', lista_locs=lista_locs)
+
+@app.route('/mnurel/saldos_geral', methods=['GET'])
+def rel_saldo_geral():
+    lista_soma = db.session.query(Vacinas.vcn_id,Vacinas.vcn_nome, db.func.sum(Localiza_vacinas.loc_qtde), db.func.sum(Localiza_vacinas.loc_qtde_usada), db.func.sum(Localiza_vacinas.loc_qtde_reserva)).outerjoin(Localiza_vacinas, Vacinas.vcn_id == Localiza_vacinas.loc_vcn).group_by(Vacinas.vcn_nome).all()
+    return render_template('relatorios/saldo_vac_geral.html', lista_saldos_geral=lista_soma)
+
+@app.route('/mnurel/saldos_ubs', methods=['GET'])
+def rel_saldo_ubs():
+    # lista_soma = db.session.query(Vacinas.vcn_id,Vacinas.vcn_nome, Localiza_vacinas.loc_ubs, Ubs.ubs_nome, db.func.sum(Localiza_vacinas.loc_qtde), db.func.sum(Localiza_vacinas.loc_qtde_usada), db.func.sum(Localiza_vacinas.loc_qtde_reserva)).outerjoin(Localiza_vacinas, Vacinas.vcn_id == Localiza_vacinas.loc_vcn).outerjoin(Localiza_vacinas, Localiza_vacinas.loc_ubs == Ubs.ubs_id).group_by(Vacinas.vcn_nome, Localiza_vacinas.loc_ubs).all()
+    lista_soma = db.session.query(Vacinas.vcn_id,Vacinas.vcn_nome, Localiza_vacinas.loc_ubs, Ubs.ubs_nome, db.func.sum(Localiza_vacinas.loc_qtde), db.func.sum(Localiza_vacinas.loc_qtde_usada), db.func.sum(Localiza_vacinas.loc_qtde_reserva)).outerjoin(Vacinas, Vacinas.vcn_id == Localiza_vacinas.loc_vcn).outerjoin(Ubs, Ubs.ubs_id == Localiza_vacinas.loc_ubs).group_by(Vacinas.vcn_nome, Localiza_vacinas.loc_ubs).all()
+    print(lista_soma)
+    return render_template('relatorios/saldo_vac_ubs.html', lista_saldos_ubs=lista_soma)
+
 
 # UBS
 @app.route('/mnucadastro/lst_ubs', methods=('GET', 'POST'))   # Nao esquecer de colocar os metodos aceitos

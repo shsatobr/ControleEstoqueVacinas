@@ -29,10 +29,10 @@
         <td>{{ lista.lotes_loc.lts_val_vacina.strftime('%d-%m-%Y') }}</td>
         <td>{{ lista['loc_ubs'] }}</td>
         <td>{{ lista.local_ubs.ubs_nome }}</td>
-        <td>{{ "%0.2f"|format(lista['loc_qtde']|float) }}</td>
-        <td>{{ "%0.2f"|format(lista['loc_qtde_usada']|float) }}</td>
-        <td>{{ "%0.2f"|format(lista['loc_qtde_reserva']|float) }}</td>
-        <td>{{ "%0.2f"|format((lista['loc_qtde'] - lista['loc_qtde_usada'] - lista['loc_qtde_reserva'])|float) }}</td>
+        <td class="ftvalor">{{ "%0.2f"|format(lista['loc_qtde']|float) }}</td>
+        <td class="ftvalor">{{ "%0.2f"|format(lista['loc_qtde_usada']|float) }}</td>
+        <td class="ftvalor">{{ "%0.2f"|format(lista['loc_qtde_reserva']|float) }}</td>
+        <td class="ftvalor">{{ "%0.2f"|format((lista['loc_qtde'] - lista['loc_qtde_usada'] - lista['loc_qtde_reserva'])|float) }}</td>
       </tr>
     {% endfor %} 
   </table>

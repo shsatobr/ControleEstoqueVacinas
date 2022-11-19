@@ -50,14 +50,9 @@
                 Relatórios
               </a>
               <ul class="dropdown-menu">
-                <!-- <li><a class="dropdown-item" href="{{ url_for('cad_ubs')}}">UBS</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('cad_user')}}">Usuários</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('cad_vcn')}}">Vacinas</a></li>
-                <li><hr class="dropdown-divider"></li> -->
                 <li><a class="dropdown-item" href="{{ url_for('rel_loc') }}">Localização das vacinas</a></li>
-                <!-- <li><a class="dropdown-item" href="{{ url_for('cad_req')}}">Requisições</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('cad_mov')}}">Movimentação</a></li> -->
-                <li><a class="dropdown-item" href="#">Saldo das vacinas</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('rel_saldo_geral') }}">Saldo das vacinas Geral</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('rel_saldo_ubs') }}">Saldo das vacinas por UBS</a></li>
               </ul>
             </li>
             <li class="nav-item">
