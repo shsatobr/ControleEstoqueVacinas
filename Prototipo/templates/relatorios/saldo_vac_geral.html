@@ -14,6 +14,7 @@
         <th>Quantidade</th>
         <th>Qtde usada</th>
         <th>Qtde reservada</th>
+        <th>Saldo atual</th>
         <th>Saldo disponível</th>
       </tr>
       {% for lista_saldo in lista_saldos_geral %}
@@ -23,6 +24,7 @@
           <td class="ftvalor">{{ "%0.2f"|format(lista_saldo[2]|float) }}</td>
           <td class="ftvalor">{{ "%0.2f"|format(lista_saldo[3]|float) }}</td>
           <td class="ftvalor">{{ "%0.2f"|format(lista_saldo[4]|float) }}</td>
+          <td class="ftvalor">{{ "%0.2f"|format((lista_saldo[2] - lista_saldo[3])|float) }}</td>
           <td class="ftvalor">{{ "%0.2f"|format((lista_saldo[2] - lista_saldo[3] - lista_saldo[4])|float) }}</td>
       </tr>
       {% endfor %} 

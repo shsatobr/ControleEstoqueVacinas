@@ -6,18 +6,17 @@
     <form method="post">
       <div class="form-group">
          <label for="form_lote">Lote(*)</label>
-         <input required type="number" name="form_lote" class="form-control"
+         <input onchange="mostraVacina()" type="number" name="form_lote" class="form-control" id="lote"
             value="{{ request.form['form_lote']}}"></input>
       </div>
       <div class="form-group">
          <label for="form_vacina">Vacina(*)</label>
-         <input readonly type="number" name="form_vacina" class="form-control"
-            value="{{ request.form['form_vacina']}}"></input>
+         <input readonly type="text" name="form_vacina" id="vacina" class="form-control"></input>
       </div>
       <div onchange="fnc_campos()" class="form-group form_select">
          Motivo
          <select id="form_motivo" name="form_motivo">
-            <option value="1">Transferência</option>
+            <option value="1">Requisição</option>
             <option value="2">Uso e consumo</option>
             <option value="3">Perda</option>
          </select>
@@ -79,6 +78,17 @@
          ws_ubs_dest.value = 999
          ws_requisicao.required = false
       };
+   }
+   function mostraVacina() {
+      let loteId = document.getElementById("lote").value
+      let endereco = "http://localhost:5000/api/lotes/" + loteId
+      let lotePromise=fetch(endereco);
+      lotePromise.then((resp) => {
+         resp.json().then((lotes) => {
+            console.log(lotes);
+            document.getElementById("vacina").value = `${lotes.lts_vacina}`;
+         })
+      });
    }
 </script>
 {% endblock %}

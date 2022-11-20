@@ -123,6 +123,14 @@ class UbsSchema(ma.Schema):
 ubs_schema = UbsSchema()
 ubss_schema = UbsSchema(many=True)
 
+class LotesSchema(ma.Schema):
+    class Meta:
+        fields = ("lts_lote","lts_vacina","lts_val_vacina","lts_nota_fiscal","lts_dt_recebimento","lts_qtde_rec","lts_campanha","lts_ubs")
+        model = Lotes
+lote_schema = LotesSchema()
+lotes_schema = LotesSchema(many=True)
+
+
 class LocalizaSchema(ma.Schema):
     class Meta:
         fields = ("loc_id","loc_vcn","loc_ubs","loc_lote","loc_qtde","loc_qtde_usada","loc_qtde_reserva")
@@ -203,6 +211,13 @@ def apiubss():
     return ubss_schema.jsonify(reg_ubss),200
     # return ubss_schema.dump(reg_ubss)
 
+@app.route('/api/lotes/<int:id>', methods=['GET'])
+def api_lotes(id):
+    reg_lote = Lotes.query.filter_by(lts_lote=id).first()
+    if reg_lote is None:
+        return jsonify({'mensagem':'UBS não cadastrada'})
+    return lote_schema.dump(reg_lote)
+
 @app.route('/api/localizacao/', methods=['GET'])
 def api_local():
     reg_local = Localiza_vacinas.query.all()
@@ -210,6 +225,12 @@ def api_local():
         return jsonify({'mensagem':'Localizações não cadastrada'})
     return locals_schema.jsonify(reg_local),200
 
+@app.route('/api/localizacao/<int:id>', methods=['GET'])
+def api_local_id(id):
+    reg_local = Localiza_vacinas.query.filter_by(ubs_id=id).first()
+    if reg_local is None:
+        return jsonify({'mensagem':'Não encontrado estoque nesse local'})
+    return local_schema.dump(reg_local)
 
 # Definicao de rotas
 @app.route('/')
@@ -858,6 +879,11 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
                 erro = True
             if (not ws_reg_req):
                 erro = True
+            if (int(ws_ubs_dest) != ws_reg_req.req_UBS_dest):
+                flash("Dados não conferem com a requisição - UBS Destino diferente da requisição")
+                print(type(ws_ubs_dest))
+                print(type(ws_reg_req.req_UBS_dest))
+                erro = True
         else:
             ws_ubs_dest = 999
             ws_requisicao = 0
@@ -872,7 +898,7 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
         else:
             ws_vacina = ws_reg_lts.lts_vacina
         if (not ws_reg_loco):
-            flash('Localização não encontrada')
+            flash('Não tem estoque desse lote/ vacina nessa UBS')
             erro = True
         else:
             ws_loc_qtde = float(ws_reg_loco.loc_qtde)
@@ -886,6 +912,7 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
                     erro = True
                 else:
                     ws_reg_loco.loc_qtde_reserva = float(ws_reg_loco.loc_qtde_reserva) - ws_qtde
+                    ws_reg_loco.loc_qtde = float(ws_loc_qtde) + ws_qtde
             else:
                 if (ws_disponivel < 0):
                     erro = True
