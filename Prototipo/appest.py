@@ -171,7 +171,7 @@ def get_post_req(id):
     return reg_req
 
 def get_post_mov(id):
-    reg_mov = Movimentacoes.query.filter_by(req_mov=id).first()
+    reg_mov = Movimentacoes.query.filter_by(mov_id=id).first()
     if reg_mov is None:
         flash('Movimento não cadastrado')
     return reg_mov
@@ -672,56 +672,41 @@ def lst_req():
     
 @app.route('/mnumov/<int:id>/req_alt', methods=('GET','POST'))    # obrigatório ter o parametro no endereco
 def alt_req(id):
-    lista_ubs = Ubs.query.all()
     reg_req = get_post_req(id)
     if request.method == 'POST':
         erro=False
         ws_qtde_ant = float(reg_req.req_qtde)
-        ws_lote_ant = reg_req.req_lote
-        ws_ubs_ant = reg_req.req_UBS_orig
         ws_id = request.form['form_id']
         ws_dt_solic = datetime.strptime(request.form['form_dt_solic'],"%Y-%m-%d")
         ws_vacina = request.form['form_vacina']
         ws_lote = request.form['form_lote']
         ws_reg_vcn = get_post_vcn(ws_vacina)
-        ws_ubs_orig = request.form['form_ubs_orig']
-        ws_ubs_dest = request.form['form_ubs_dest']
         ws_qtde = float(request.form['form_qtde'])
         ws_responsavel = request.form['form_responsavel']
-        if (ws_ubs_ant == ws_ubs_orig):
-            reg_loco = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_orig, loc_lote = ws_lote).first()
-            ws_disponivel = float(reg_loco.loc_qtde) - float(reg_loco.loc_qtde_usada) - float(reg_loco.loc_qtde_reserva) + ws_qtde_ant - ws_qtde
-            reg_loco.loc_qtde_reserva = ws_qtde # Verificar <-----------------------------
-        else:
-            reg_loco = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_ant, loc_lote = ws_lote).first()
-            reg_loco_new = Localiza_vacinas.query.filter_by(loc_ubs=ws_ubs_orig, loc_lote = ws_lote).first()
-            ws_disponivel = float(reg_loco_new.loc_qtde) - float(reg_loco_new.loc_qtde_usada) - float(reg_loco_new.loc_qtde_reserva) - ws_qtde
+        reg_local = Localiza_vacinas.query.filter_by(loc_ubs=reg_req.req_UBS_orig, loc_lote = ws_lote).first()
+        ws_disponivel = float(reg_local.loc_qtde) - float(reg_local.loc_qtde_usada) - float(reg_local.loc_qtde_reserva) + ws_qtde_ant - ws_qtde
+        reg_local.loc_qtde_reserva = float(reg_local.loc_qtde_reserva) + ws_qtde - ws_qtde_ant
         if (ws_disponivel < 0):
             flash("Saldo insuficiente")
             erro = True
         if not ws_vacina:
             flash('Vacina é obrigatório','error')
             erro = True
-        if (ws_ubs_dest == ws_ubs_orig):
-            flash("UBS de origem e destino devem ser diferentes")
-            erro = True
         if (not ws_reg_vcn):
             erro = True
-        if (not reg_loco):
+        if (not reg_local):
             erro = True
             flash("Localização não encontrada")
         if (not erro):
             reg_req.req_id = ws_id
             reg_req.req_dt_solic = ws_dt_solic
             reg_req.req_vacina = ws_vacina
-            reg_req.req_UBS_orig = ws_ubs_orig
-            reg_req.req_UBS_dest = ws_ubs_dest
             reg_req.req_qtde = ws_qtde
             reg_req.req_responsavel = ws_responsavel
             db.session.commit()
             flash('Registro alterado')
             return redirect(url_for('cad_req'))
-    return render_template('movimentacao/alt_requisicoes.html', reg_req=reg_req, lista_ubs=lista_ubs)
+    return render_template('movimentacao/alt_requisicoes.html', reg_req=reg_req)
 
 @app.route('/mnumov/req_inc', methods=('GET', 'POST'))
 def inc_req():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA TABELA
@@ -912,7 +897,7 @@ def inc_mov():                # Nome de funcao NUNCA PODE SER IGUAL AO NOME DA T
                     erro = True
                 else:
                     ws_reg_loco.loc_qtde_reserva = float(ws_reg_loco.loc_qtde_reserva) - ws_qtde
-                    ws_reg_loco.loc_qtde = float(ws_loc_qtde) + ws_qtde
+                    ws_reg_loco.loc_qtde = float(ws_loc_qtde) - ws_qtde
             else:
                 if (ws_disponivel < 0):
                     erro = True

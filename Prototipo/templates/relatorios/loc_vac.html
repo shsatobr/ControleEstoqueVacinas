@@ -18,6 +18,7 @@
       <th>Quantidade</th>
       <th>Qtde usada</th>
       <th>Qtde reservada</th>
+      <th>Saldo Atual</th>
       <th>Saldo disponível</th>
     </tr>
     {% for lista in lista_locs %}
@@ -32,6 +33,7 @@
         <td class="ftvalor">{{ "%0.2f"|format(lista['loc_qtde']|float) }}</td>
         <td class="ftvalor">{{ "%0.2f"|format(lista['loc_qtde_usada']|float) }}</td>
         <td class="ftvalor">{{ "%0.2f"|format(lista['loc_qtde_reserva']|float) }}</td>
+        <td class="ftvalor">{{ "%0.2f"|format((lista['loc_qtde'] - lista['loc_qtde_usada'])|float) }}</td>
         <td class="ftvalor">{{ "%0.2f"|format((lista['loc_qtde'] - lista['loc_qtde_usada'] - lista['loc_qtde_reserva'])|float) }}</td>
       </tr>
     {% endfor %} 

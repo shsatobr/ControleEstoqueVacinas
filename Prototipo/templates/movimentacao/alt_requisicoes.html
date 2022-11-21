@@ -17,7 +17,7 @@
       </div>
       <div class="form-group">
         <label for="form_lote">Lote (*)</label>
-        <input required type="number" name="form_lote" class="form-control"
+        <input readonly required type="number" name="form_lote" class="form-control"
            value="{{ request.form['form_lote'] or reg_req['req_lote'] }}"></input>
       </div>
       <div class="form-group">
@@ -26,28 +26,14 @@
            value="{{ request.form['form_vacina'] or reg_req['req_vacina'] }}"></input>
       </div>
       <div class="form-group form_select">
-        UBS de origem
-        <select name="form_ubs_orig">
-           {% for lista in lista_ubs %}
-              {% if (lista['ubs_id'] == reg_req['req_UBS_orig']) %}
-                <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
-              {% else %}
-                <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
-              {% endif %}
-          {% endfor %}
-        </select>
+        <label for="form_ubs_orig">UBS de origem (*)</label>
+        <input readonly type="text" name="form_ubs_orig" class="form-control"
+           value="{{ reg_req.req_origem.ubs_nome }}"></input>
       </div>
       <div class="form-group form_select">
-          UBS de destino
-          <select name="form_ubs_dest">
-             {% for lista in lista_ubs %}
-                {% if (lista['ubs_id'] == reg_req['req_UBS_dest']) %}
-                  <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
-                {% else %}
-                  <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
-                {% endif %}
-            {% endfor %}
-          </select>
+        <label for="form_ubs_dest">UBS de destino (*)</label>
+        <input readonly type="text" name="form_ubs_dest" class="form-control"
+           value="{{ reg_req.req_dest.ubs_nome }}"></input>
       </div>
       <div class="form-group">
         <label for="form_qtde">Quantidade</label>

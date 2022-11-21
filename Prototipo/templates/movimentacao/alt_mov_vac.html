@@ -12,12 +12,12 @@
       </div>
       <div class="form-group">
         <label for="form_lote">Lote(*)</label>
-        <input required type="number" name="form_lote" class="form-control"
+        <input readonly required type="number" name="form_lote" class="form-control"
            value="{{ request.form['form_lote'] or reg_mov['mov_lote'] }}"></input>
       </div>
       <div class="form-group">
         <label for="form_vacina">Vacina(*)</label>
-        <input required type="number" name="form_vacina" class="form-control"
+        <input readonly required type="number" name="form_vacina" class="form-control"
            value="{{ request.form['form_vacina'] or reg_mov['mov_vacina'] }}"></input>
       </div>
       <div onchange="fnc_campos()" class="form-group form_select">
