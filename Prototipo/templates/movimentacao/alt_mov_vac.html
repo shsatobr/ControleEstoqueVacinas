@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>{% block title %}Cadastro de movimentações - "{{ reg_mov['mov_id'] }}" {% endblock %}</h2>
+  <h2>{% block title %}Alteração de movimentações - "{{ reg_mov['mov_id'] }}" {% endblock %}</h2>
   <p>
     <form method="POST">
       <div class="form-group">
@@ -20,54 +20,36 @@
         <input readonly required type="number" name="form_vacina" class="form-control"
            value="{{ request.form['form_vacina'] or reg_mov['mov_vacina'] }}"></input>
       </div>
-      <div onchange="fnc_campos()" class="form-group form_select">
-        Motivo
-        <select id="form_motivo" name="form_motivo">
-          {% if (reg_mov['mov_motivo'] == "1") %} 
-            <option value="1" selected>Transferência</option>
-          {% else %}
-            <option value="1">Transferência</option>
-          {% endif %}
-          {% if (reg_mov['mov_motivo'] == "2") %} 
-            <option value="2" selected>Uso e Consumo</option>
-          {% else %}
-            <option value="2">Uso e Consumo</option>
-          {% endif %}
-          {% if (reg_mov['mov_motivo'] == "3") %} 
-            <option value="3" selected>Perda</option>
-          {% else %}
-            <option value="3">Perda</option>
-          {% endif %}
-        </select>
+      <div class="form-group form_select">
+        <label for="form_motivo">Motivo(*)</label>
+        {% if (reg_mov['mov_motivo'] == "1") %} 
+          <input readonly required type="text" name="form_motivo" class="form-control"
+              value="Transferência"></input>
+        {% endif %}
+        {% if (reg_mov['mov_motivo'] == "2") %} 
+          <input readonly required type="text" name="form_motivo" class="form-control"
+              value="Uso e consumo"></input>
+        {% endif %}
+        {% if (reg_mov['mov_motivo'] == "3") %} 
+          <input readonly required type="text" name="form_motivo" class="form-control"
+              value="Perda"></input>
+        {% endif %}
       </div>
       <div class="form-group">
         <label for="form_requisicao">Requisicao</label>
-        <input type="number" name="form_requisicao" class="form-control"
+        <input readonly type="number" name="form_requisicao" class="form-control"
            value="{{ request.form['form_requisicao'] or reg_mov['mov_requisicao'] }}"></input>
       </div>
       <div class="form-group">
-        UBS de origem
-        <select name="form_ubs_orig">
-           {% for lista in lista_ubs %}
-              {% if (lista['ubs_id'] == reg_mov['mov_UBS_orig']) %}
-                <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
-              {% else %}
-                <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
-              {% endif %}
-           {% endfor %}
-        </select>
+        <label for="form_ubs_orig">UBS de origem(*)</label>
+        <input readonly required type="text" name="form_ubs_orig" class="form-control"
+           value="{{ request.form['form_ubs_orig'] or reg_mov.mov_ubs.ubs_nome }}"></input>
       </div>
       <div class="form-group">
-          UBS de destino
-          <select name="form_ubs_dest">
-             {% for lista in lista_ubs %}
-                {% if (lista['ubs_id'] == reg_mov['mov_UBS_dest']) %}
-                  <option value="{{ lista['ubs_id']}}" selected>{{ lista['ubs_nome']}}</option>
-                {% else %}
-                  <option value="{{ lista['ubs_id']}}">{{ lista['ubs_nome']}}</option>
-                {% endif %}
-             {% endfor %}
-          </select>
+        <label for="form_ubs_dest">UBS de destino(*)</label>
+        <input readonly required type="text" name="form_ubs_dest" class="form-control"
+           value="{{ request.form['form_ubs_dest'] or reg_mov.mov_ubs_dest.ubs_nome }}"></input>
+
       </div>
         <!-- <div class="form-group">
         <label for="form_motivo">Motivo (*)</label>

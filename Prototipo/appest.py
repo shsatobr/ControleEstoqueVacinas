@@ -40,7 +40,8 @@ class Ubs(db.Model):   # Nome da tabela e campos conforme banco de dados
     ubs_users = db.relationship('User', backref='user') #Nome da Classe e campo virtual
     ubs_req_origem = db.relationship('Requisicoes',foreign_keys="Requisicoes.req_UBS_orig", backref='req_origem') #Nome da Classe e campo virtual
     ubs_req_dest = db.relationship('Requisicoes',foreign_keys="Requisicoes.req_UBS_dest", backref='req_dest') #Nome da Classe e campo virtual
-    ubs_mov = db.relationship('Movimentacoes', backref='mov_ubs') #Nome da Classe e campo virtual
+    ubs_mov = db.relationship('Movimentacoes', foreign_keys="Movimentacoes.mov_UBS_orig", backref='mov_ubs') #Nome da Classe e campo virtual
+    ubs_mov_dest = db.relationship('Movimentacoes', foreign_keys="Movimentacoes.mov_UBS_dest", backref='mov_ubs_dest') #Nome da Classe e campo virtual
     ubs_lts = db.relationship('Lotes', backref='lotes') #Nome da Classe e campo virtual
     ubs_loc = db.relationship('Localiza_vacinas', backref='local_ubs') #Nome da Classe e campo virtual
 
@@ -100,7 +101,7 @@ class Movimentacoes(db.Model):   # Nome da tabela e campos conforme banco de dad
     mov_vacina = db.Column(db.Integer,db.ForeignKey(Vacinas.vcn_id), nullable=False)
     mov_requisicao = db.Column(db.Integer)
     mov_UBS_orig = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
-    mov_UBS_dest = db.Column(db.Integer)
+    mov_UBS_dest = db.Column(db.Integer, db.ForeignKey(Ubs.ubs_id))
     mov_motivo = db.Column(db.String(50))
     mov_qtde = db.Column(db.Numeric)
     mov_dt_mov = db.Column(db.DateTime)
@@ -816,15 +817,26 @@ def alt_mov(id):
         ws_vacina = request.form['form_vacina']
         ws_reg_vcn = get_post_vcn(ws_vacina)
         ws_requisicao = request.form['form_requisicao']
-        ws_ubs_orig = request.form['form_ubs_orig']
-        ws_ubs_dest = request.form['form_ubs_dest']
-        ws_motivo = request.form['form_motivo']
+        ws_motivo = reg_mov.mov_motivo
         ws_qtde = request.form['form_qtde']
         ws_lote = int(request.form['form_lote'])
         ws_reg_lts = get_post_lts(ws_lote)
-        # ws_dt_mov = request.form['form_dt_mov']
+        reg_loco = Localiza_vacinas.query.filter_by(loc_ubs=reg_mov.mov_UBS_orig, loc_lote = ws_lote).first()
+        reg_loco.loc_qtde_usada = float(reg_loco.loc_qtde_usada) - float(reg_mov.mov_qtde) + float(ws_qtde)
+        if (ws_motivo == 1):
+            reg_loco.loc_qtde_usada = reg_loco.loc_qtde_usada + reg_mov.mov_qtde - ws_qtde
+            reg_locd = Localiza_vacinas.query.filter_by(loc_ubs=reg_mov.mov_UBS_dest, loc_lote = ws_lote).first()
+            reg_locd.loc_qtde_usada = float(reg_locd.loc_qtde_usada) - float(reg_mov.mov_qtde) + float(ws_qtde)
+            if (not reg_locd):
+                flash("Não encontrado UBS/Movimento destino")
+                erro = True
+            else:
+                reg_locd.loc_qtde_usada = float(reg_locd.loc_qtde_usada) - float(reg_mov.mov_qtde) + float(ws_qtde)
         if not ws_vacina:
             flash('Vacina é obrigatório','error')
+            erro = True
+        if (not reg_loco):
+            flash("Não localizado UBS / Movimento")
             erro = True
         if (not ws_reg_vcn):
             erro = True
@@ -834,11 +846,8 @@ def alt_mov(id):
             reg_mov.mov_id = ws_id
             # reg_mov.req_dt_solic = ws_dt_solic
             reg_mov.mov_vacina = ws_vacina
-            reg_mov.mov_UBS_orig = ws_ubs_orig
-            reg_mov.mov_UBS_dest = ws_ubs_dest
             reg_mov.mov_qtde = ws_qtde
             reg_mov.mov_requisicao = ws_requisicao
-            reg_mov.mov_motivo = ws_motivo
             reg_mov.mov_lote = ws_lote
             db.session.commit()
             flash('Registro alterado')
