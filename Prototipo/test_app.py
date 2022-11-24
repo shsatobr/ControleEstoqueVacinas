@@ -32,6 +32,6 @@ def test_calcula_saldo_loc_errado():
     ws_loc_qtde_reserva = 1
     ws_loc_qtde_ant = 25
     ws_loc_qtde_rec = 21
-    ws_saldo = 5
+    ws_saldo = 0
     ws_saldo_fun = calcula_saldo_loc(ws_loc_qtde, ws_loc_qtde_usada, ws_loc_qtde_reserva, ws_loc_qtde_ant, ws_loc_qtde_rec)
     assert ws_saldo == ws_saldo_fun
